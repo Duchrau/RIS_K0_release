@@ -1,5 +1,8 @@
 # RIS K0 — canonical release (provenanced + signed)
 
+**Quick verify & usage:** [CONSUMERS.md](CONSUMERS.md)  
+**Full verification steps:** [VERIFY.md](VERIFY.md)
+
 Download: https://github.com/Duchrau/RIS_K0_release/releases/latest
 
 Artifacts:
