@@ -1,0 +1,12 @@
+# VERIFY — RIS_K0_provenanced.zip
+
+## 1) SHA256 (PowerShell)
+$h   = (Get-FileHash .\RIS_K0_provenanced.zip -Algorithm SHA256).Hash.ToLower()
+$ref = ([regex]::Match((Get-Content .\RIS_K0_provenanced.zip.sha256 -Raw),'(?i)[0-9a-f]{64}')).Value.ToLower()
+$h -eq $ref
+
+## 2) Signature (cmd.exe)
+ssh-keygen -Y verify -f provenance\allowed_signers.txt -I maintainer -n RIS_K0 -s provenance\byte_hash.txt.sig ^< provenance\byte_hash.txt
+
+Expected signer fingerprint (ED25519):
+SHA256:En+c93lQGMAnjkd680oK0DPKYq3tpZ4ug8QXnjTiZys
