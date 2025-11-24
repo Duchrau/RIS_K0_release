@@ -11,7 +11,7 @@ if ($h -ne $ref) { Write-Host "ZIP integrity failure." -ForegroundColor Red; exi
 
 $tmp = Join-Path $env:TEMP ("ris_k0_verify_" + [guid]::NewGuid().ToString())
 New-Item -ItemType Directory -Path $tmp | Out-Null
-Expand-Archive -Path .\RIS_K0_provenanced.zip -DestinationPath $tmp
+$zip=Join-Path $pwd "RIS_K0_provenanced.zip"; Write-Host "DEBUG: ZIP_BYTES=" ((Get-Item $zip).Length); Write-Host "DEBUG: SIDEcar=" (Get-Content ".\RIS_K0_provenanced.zip.sha256" -Raw); Expand-Archive -Path $zip -DestinationPath $tmp
 
 $prov = Join-Path $tmp "provenance"
 
