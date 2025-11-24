@@ -12,15 +12,15 @@ jobs:
       - name: Tool versions
         shell: pwsh
         run: |
-          System.Management.Automation.PSVersionHashTable.PSVersion.ToString()
+          $PSVersionTable.PSVersion.ToString()
           ssh -V
           Get-Command ssh-keygen | Format-List *
       - name: Fetch release assets (pinned)
         shell: pwsh
         run: |
-          \ = "https://github.com/Duchrau/RIS_K0_release/releases/download/k0-archive-locked-2025-11-21"
-          Invoke-WebRequest -Uri "\/RIS_K0_provenanced.zip" -OutFile "RIS_K0_provenanced.zip"
-          Invoke-WebRequest -Uri "\/RIS_K0_provenanced.zip.sha256" -OutFile "RIS_K0_provenanced.zip.sha256"
+          $base = "https://github.com/Duchrau/RIS_K0_release/releases/download/k0-archive-locked-2025-11-21"
+          Invoke-WebRequest -Uri "${base}/RIS_K0_provenanced.zip" -OutFile "RIS_K0_provenanced.zip"
+          Invoke-WebRequest -Uri "${base}/RIS_K0_provenanced.zip.sha256" -OutFile "RIS_K0_provenanced.zip.sha256"
           Get-ChildItem -Name | Sort-Object
           Get-FileHash .\RIS_K0_provenanced.zip -Algorithm SHA256
           Get-Content .\RIS_K0_provenanced.zip.sha256 -Raw
@@ -42,8 +42,8 @@ jobs:
       - name: Fetch release assets (pinned)
         run: |
           base="https://github.com/Duchrau/RIS_K0_release/releases/download/k0-archive-locked-2025-11-21"
-          curl -sSL "/RIS_K0_provenanced.zip" -o RIS_K0_provenanced.zip
-          curl -sSL "/RIS_K0_provenanced.zip.sha256" -o RIS_K0_provenanced.zip.sha256
+          curl -sSL "${base}/RIS_K0_provenanced.zip" -o RIS_K0_provenanced.zip
+          curl -sSL "${base}/RIS_K0_provenanced.zip.sha256" -o RIS_K0_provenanced.zip.sha256
           ls -la
           sha256sum RIS_K0_provenanced.zip
           cat RIS_K0_provenanced.zip.sha256
