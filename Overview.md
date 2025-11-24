@@ -178,7 +178,7 @@ Machine-readable mapping of all canonical files: paths, sizes, hashes.
 
 Records metadata (tool versions, timestamps, release state).  
 
-Allowed: `status ∈ {"DRAFT","FROZEN","ARCHIVE\_LOCKED"}`.
+Allowed: `status in {"DRAFT","FROZEN","ARCHIVE_LOCKED"}`.
 
 
 

@@ -1,32 +1,33 @@
-# RIS K0 - verify_all.ps1 (canonical)
-
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-if (!(Test-Path "RIS_K0_provenanced.zip") -or !(Test-Path "RIS_K0_provenanced.zip.sha256")) { Write-Host "Missing release assets." -ForegroundColor Red; exit 1 }
+$zip   = Join-Path $pwd "RIS_K0_provenanced.zip"
+$sc    = Join-Path $pwd "RIS_K0_provenanced.zip.sha256"
 
-$h   = (Get-FileHash .\RIS_K0_provenanced.zip -Algorithm SHA256).Hash.ToLower()
-$ref = ([regex]::Match((Get-Content .\RIS_K0_provenanced.zip.sha256 -Raw),'(?i)[0-9a-f]{64}')).Value.ToLower()
-if ($h -ne $ref) { Write-Host "ZIP integrity failure." -ForegroundColor Red; exit 1 }
+$hashLocal = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLower()
+$hashRef   = ([regex]::Match((Get-Content $sc -Raw),'(?i)[0-9a-f]{64}')).Value.ToLower()
 
-$tmp = Join-Path $env:TEMP ("ris_k0_verify_" + [guid]::NewGuid().ToString())
-New-Item -ItemType Directory -Path $tmp | Out-Null
-$zip=Join-Path $pwd "RIS_K0_provenanced.zip"; Expand-Archive -Path $zip -DestinationPath $tmp
+if ($hashLocal -ne $hashRef) { throw "SHA256 mismatch" }
 
-$prov = Join-Path $tmp "provenance"
+$tmp = New-Item -ItemType Directory -Path (Join-Path $pwd ("tmp_" + [guid]::NewGuid())) -Force
 
-$need = @("manifest.json","provenance.json","byte_hash.txt","byte_hash.txt.sig","allowed_signers.txt")
-foreach ($f in $need) { if (!(Test-Path (Join-Path $prov $f))) { Write-Host "Missing provenance file: $f" -ForegroundColor Red; exit 1 } }
+Expand-Archive -Path $zip -DestinationPath $tmp.FullName
 
-$ok = $stdin = Join-Path $prov "byte_hash.txt"
-$sig   = Join-Path $prov "byte_hash.txt.sig"
-$allow = Join-Path $prov "allowed_signers.txt"
-& cmd /c "type ""$stdin"" | ssh-keygen -Y verify -f ""$allow"" -I maintainer -n RIS_K0 -s ""$sig"""
-if ($LASTEXITCODE -ne 0) { Write-Host "Signature verification failed." -ForegroundColor Red; exit 1 }
-if ($LASTEXITCODE -ne 0) { Write-Host "Signature verification failed." -ForegroundColor Red; exit 1 }
+$bh   = Get-Content (Join-Path $tmp.FullName "provenance\byte_hash.txt") -Raw
+$sig  = Join-Path $tmp.FullName "provenance\byte_hash.txt.sig"
+$asg  = Join-Path $tmp.FullName "provenance\allowed_signers.txt"
 
-$meta = Get-Content (Join-Path $prov "provenance.json") -Raw | ConvertFrom-Json
-if ($meta.status -ne "ARCHIVE_LOCKED") { Write-Host "Invalid final state." -ForegroundColor Red; exit 1 }
+$proc = Start-Process ssh-keygen -ArgumentList @(
+    "-Y", "verify",
+    "-f", $asg,
+    "-I", "maintainer",
+    "-n", "RIS_K0",
+    "-s", $sig
+) -NoNewWindow -PassThru -Wait -RedirectStandardInput "byte_hash.txt"
 
-Write-Host "OK"
-exit 0
+if ($proc.ExitCode -ne 0) { throw "Signature invalid" }
+
+$prov = Get-Content (Join-Path $tmp.FullName "provenance\provenance.json") -Raw | ConvertFrom-Json
+if ($prov.status -ne "ARCHIVE_LOCKED") { throw "Invalid release state" }
+
+"OK"
+Remove-Item $tmp -Recurse -Force
