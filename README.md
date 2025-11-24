@@ -1,3 +1,5 @@
+[![verify](https://github.com/Duchrau/RIS_K0_release/actions/workflows/verify.yml/badge.svg)](https://github.com/Duchrau/RIS_K0_release/actions/workflows/verify.yml)
+
 # RIS K0 — Canonical Provenanced Release
 
 This repository provides the frozen, provenance-verified RIS K0 release bundle.
