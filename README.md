@@ -104,3 +104,16 @@ provenance/
   byte_hash.txt.sig
   allowed_signers.txt
 This repository contains the canonical, frozen RIS K0 bundle with full reproducible provenance and signature verification.
+---
+
+## Related Non-Normative Releases
+
+### [RIS_RFS_release](https://github.com/Duchrau/RIS_RFS_release)
+*Reflexive Fixed-Point System (non-normative background release)*  
+Defines minimal operator conditions under which reflexive transformations become locally idempotent.  
+Independent from the RIS K₀ kernel; provides theoretical scaffolding for recursive invariance.
+
+### [RIS_L5_release](https://github.com/Duchrau/RIS_L5_release)
+*MirrorFrame Meta-Layer (archival context)*  
+Documents the historical meta-structural model (L5) preceding K₀.  
+Conceptual only, no operational implementation.
