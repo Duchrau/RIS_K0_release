@@ -18,7 +18,11 @@ $prov = Join-Path $tmp "provenance"
 $need = @("manifest.json","provenance.json","byte_hash.txt","byte_hash.txt.sig","allowed_signers.txt")
 foreach ($f in $need) { if (!(Test-Path (Join-Path $prov $f))) { Write-Host "Missing provenance file: $f" -ForegroundColor Red; exit 1 } }
 
-$ok = Get-Content (Join-Path $prov "byte_hash.txt") -Raw | & ssh-keygen -Y verify -f (Join-Path $prov "allowed_signers.txt") -I maintainer -n RIS_K0 -s (Join-Path $prov "byte_hash.txt.sig") 2>&1
+$ok = $stdin = Join-Path $prov "byte_hash.txt"
+$sig   = Join-Path $prov "byte_hash.txt.sig"
+$allow = Join-Path $prov "allowed_signers.txt"
+& cmd /c "type ""$stdin"" | ssh-keygen -Y verify -f ""$allow"" -I maintainer -n RIS_K0 -s ""$sig"""
+if ($LASTEXITCODE -ne 0) { Write-Host "Signature verification failed." -ForegroundColor Red; exit 1 }
 if ($LASTEXITCODE -ne 0) { Write-Host "Signature verification failed." -ForegroundColor Red; exit 1 }
 
 $meta = Get-Content (Join-Path $prov "provenance.json") -Raw | ConvertFrom-Json
