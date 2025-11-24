@@ -63,13 +63,13 @@ ini
 Code kopieren
 status = "ARCHIVE_LOCKED"
 Documentation
-Quick verification: CONSUMERS.md
+Quick verification: [CONSUMERS.md](CONSUMERS.md)
 
-Full verification: VERIFY.md
+Full verification: [VERIFY.md](VERIFY.md)
 
-Technical overview (Markdown): Overview.md
+Technical overview (Markdown): [Overview.md](Overview.md)
 
-Technical overview (PDF): Overview.pdf
+Technical overview (PDF): [Overview.pdf](Overview.pdf)
 
 Release Facts
 makefile
