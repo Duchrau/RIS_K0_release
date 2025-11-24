@@ -15,7 +15,12 @@ if ! sha256sum -c "$sidecar"; then
 fi
 
 tmp="$(mktemp -d 2>/dev/null || mktemp -d -t ris_k0_verify)"
-unzip -q "$zip" -d "$tmp"
+if unzip -q "$zip" -d "$tmp"; then
+  :
+else
+  ec=$?
+  [ "$ec" -eq 1 ] || exit "$ec"
+fi
 
 prov="$tmp/provenance"
 need="manifest.json provenance.json byte_hash.txt byte_hash.txt.sig allowed_signers.txt"
@@ -44,3 +49,4 @@ fi
 
 echo "OK"
 exit 0
+
