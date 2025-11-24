@@ -1,0 +1,47 @@
+name: verify
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download latest release assets
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $ErrorActionPreference="Stop"
+          $api="https://api.github.com/repos/$env:GITHUB_REPOSITORY/releases/latest"
+          $hdr=@{"Authorization"="Bearer $env:GITHUB_TOKEN";"Accept"="application/vnd.github+json"}
+          $j=Invoke-RestMethod -Uri $api -Headers $hdr
+          $need=@("RIS_K0_provenanced.zip","RIS_K0_provenanced.zip.sha256")
+          foreach($n in $need){
+            $a=$j.assets | Where-Object { $_.name -eq $n }
+            if(-not $a){ throw "asset not found: $n" }
+            Invoke-WebRequest -Uri $a.browser_download_url -Headers $hdr -OutFile $n
+          }
+      - name: Run verifier
+        shell: pwsh
+        run: ./verify_all.ps1
+
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: sudo apt-get update && sudo apt-get install -y jq unzip openssh-client coreutils
+      - name: Download latest release assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/latest"
+          urls=$(curl -sSL -H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json" "$api" | jq -r '.assets[] | select(.name=="RIS_K0_provenanced.zip" or .name=="RIS_K0_provenanced.zip.sha256") | .browser_download_url')
+          for u in $urls; do curl -sSL -H "Authorization: Bearer ${GITHUB_TOKEN}" -o "$(basename "$u")" "$u"; done
+      - name: Run verifier
+        run: sh ./verify_all.sh
