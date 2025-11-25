@@ -10,3 +10,12 @@ RIS_K0_provenanced.zip.sha256
 !/_ci_local/*.ps1
 
 !/_ci_local/*.ps1
+logs/
+release/K0_post_repair_artifacts_*.zip
+release/K0_post_repair_artifacts_*.zip.sha256
+docs/*.docx
+docs/transfer_uris_*.txt
+docs/handover_receipt_*.*
+docs/handover_README_*.*
+*.bak
+*.bak_*
