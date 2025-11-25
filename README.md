@@ -1,6 +1,6 @@
-[![verify](https://github.com/Duchrau/RIS_K0_release/actions/workflows/verify.yml/badge.svg)](https://github.com/Duchrau/RIS_K0_release/actions/workflows/verify.yml)
+﻿[![verify](https://github.com/Duchrau/RIS_K0_release/actions/workflows/verify.yml/badge.svg)](https://github.com/Duchrau/RIS_K0_release/actions/workflows/verify.yml)
 
-# RIS K0 — Canonical Provenanced Release
+# RIS K0 â€” Canonical Provenanced Release
 
 This repository provides the frozen, provenance-verified RIS K0 release bundle.
 All integrity, signature and provenance data is immutable.
@@ -111,9 +111,7 @@ This repository contains the canonical, frozen RIS K0 bundle with full reproduci
 ### [RIS_RFS_release](https://github.com/Duchrau/RIS_RFS_release)
 *Reflexive Fixed-Point System (non-normative background release)*  
 Defines minimal operator conditions under which reflexive transformations become locally idempotent.  
-Independent from the RIS K₀ kernel; provides theoretical scaffolding for recursive invariance.
+Independent from the RIS Kâ‚€ kernel; provides theoretical scaffolding for recursive invariance.
 
-### [RIS_L5_release](https://github.com/Duchrau/RIS_L5_release)
-*MirrorFrame Meta-Layer (archival context)*  
-Documents the historical meta-structural model (L5) preceding K₀.  
-Conceptual only, no operational implementation.
+
+
