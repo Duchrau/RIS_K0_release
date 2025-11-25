@@ -1,6 +1,8 @@
-# Ignore temporary and local files
+﻿# Ignore temporary and local files
 _ci_local/
 tmp_*/
 TinyTeX.zip
 RIS_K0_provenanced.zip
 RIS_K0_provenanced.zip.sha256
+!release/*.sha256
+
