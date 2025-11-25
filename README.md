@@ -1,6 +1,6 @@
 ﻿[![verify](https://github.com/Duchrau/RIS_K0_release/actions/workflows/verify.yml/badge.svg)](https://github.com/Duchrau/RIS_K0_release/actions/workflows/verify.yml)
 
-# RIS K0 â€” Canonical Provenanced Release
+#RIS K0 — Provenanced Model (ARCHIVE_LOCKED)
 
 This repository provides the frozen, provenance-verified RIS K0 release bundle.
 All integrity, signature and provenance data is immutable.
