@@ -6,3 +6,5 @@ RIS_K0_provenanced.zip
 RIS_K0_provenanced.zip.sha256
 !release/*.sha256
 
+
+!/_ci_local/*.ps1
