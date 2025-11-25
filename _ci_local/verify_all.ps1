@@ -1,17 +1,48 @@
-﻿# RIS K0 - verify_all.ps1 (canonical)
+﻿  param([Parameter(Mandatory)][string]$Path,[string]$Algorithm='SHA256')
+}
+Remove-Item function:\Get-Content -ErrorAction SilentlyContinue
+function Get-Content {
+  [CmdletBinding(DefaultParameterSetName='Path')]
+  param(
+    [Parameter(ParameterSetName='Path', Mandatory=$true, Position=0)]
+    [string]$Path,
+    [Parameter(ParameterSetName='Path')][switch]$Raw,
+    [Parameter(ParameterSetName='Path')][int]$TotalCount
+  )
+    Write-Host ("DBG Read-Sidecar: {0} (Raw={1} Top={2})" -f $Path,$Raw,$TotalCount)
+  }
+  Microsoft.PowerShell.Management\Get-Content @PSBoundParameters
+}
+# === /DBG SHIMS ===
+
+function Resolve-RepoRoot {
+  param([string]$Start)
+  if ([string]::IsNullOrWhiteSpace($Start)) {
+    $Start = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
+  }
+  $d = [IO.DirectoryInfo]$Start
+  while ($d -and -not (Test-Path (Join-Path $d.FullName '.git')) -and -not (Test-Path (Join-Path $d.FullName 'release') -PathType Container)) {
+    $d = $d.Parent
+  }
+  if (-not $d) { throw "Repo-Root nicht gefunden." }
+  if ((Split-Path -Leaf $d.FullName) -ieq 'release' -and $d.Parent) { $d = $d.Parent }
+  return $d.FullName
+}
+
+$RepoRoot = Resolve-RepoRoot
+# REMOVED self-join of $ZipPath
+if (-not (Test-Path $ZipPath -PathType Leaf)) { throw "Missing $ZipPath" }
+
+# RIS K0 - verify_all.ps1 (canonical)
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-if (!(Test-Path "release\\release\RIS_K0_provenanced.zip") -or !(Test-Path "release\\release\RIS_K0_provenanced.zip.sha256")) { Write-Host "Missing release assets." -ForegroundColor Red; exit 1 }
 
-$h   = (Get-FileHash .\release\\release\RIS_K0_provenanced.zip -Algorithm SHA256).Hash.ToLower()
-$ref = ([regex]::Match((Get-Content .\release\\release\RIS_K0_provenanced.zip.sha256 -Raw),'(?i)[0-9a-f]{64}')).Value.ToLower()
 if ($h -ne $ref) { Write-Host "ZIP integrity failure." -ForegroundColor Red; exit 1 }
 
 $tmp = Join-Path $env:TEMP ("ris_k0_verify_" + [guid]::NewGuid().ToString())
 New-Item -ItemType Directory -Path $tmp | Out-Null
-Expand-Archive -Path .\release\\release\RIS_K0_provenanced.zip -DestinationPath $tmp
 
 $prov = Join-Path $tmp "provenance"
 
@@ -32,3 +63,27 @@ Write-Host "OK"
 exit 0
 
 
+
+
+
+
+
+
+
+
+
+# --- CANONICAL SHA CHECK ---
+$ShaPath = "$ZipPath.sha256"
+if (-not (Test-Path $ShaPath -PathType Leaf)) { throw "Missing $ShaPath" }
+$act = (Get-FileHash -Algorithm SHA256 -Path $ZipPath).Hash.ToLower()
+$ref = ([regex]::Match((Get-Content -LiteralPath $ShaPath -Raw),'(?i)\b[0-9a-f]{64}\b')).Value.ToLower()
+if ([string]::IsNullOrWhiteSpace($ref)) { throw "Invalid sidecar: no digest in $ShaPath" }
+if ($act -ne $ref) {
+  Write-Host "DBG ZipPath = $ZipPath"
+  Write-Host "DBG ShaPath = $ShaPath"
+  Write-Host "DBG act    = $act"
+  Write-Host "DBG ref    = $ref"
+  throw "SHA256 mismatch"
+}
+"SHA256 OK: $act"
+# --- /CANONICAL SHA CHECK ---
