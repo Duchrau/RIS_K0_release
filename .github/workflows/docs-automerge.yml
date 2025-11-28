@@ -1,0 +1,36 @@
+name: docs-auto-approve-merge
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions: write-all
+
+jobs:
+  auto-approve-and-merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enforce docs-only
+        run: |
+          NON_DOCS=$(git diff --name-only HEAD^ HEAD | grep -v '^docs/')
+          if [ -n "$NON_DOCS" ]; then
+            echo "Non-docs change present: $NON_DOCS"
+            exit 1
+          fi
+          echo "Docs-only change confirmed."
+
+      - name: Auto-approve
+        uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.DOCS_BOT_TOKEN }}
+
+      - name: Auto-merge
+        uses: pascalgn/automerge-action@v0.16.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.DOCS_BOT_TOKEN }}
+        with:
+          mergeMethod: squash
