@@ -1,3 +1,3 @@
-# Test Auto-Merge
+# docs auto-merge test
 
-This is a test file for automerge functionality.
+This file exists only to test the docs auto-approve/auto-merge pipeline.
