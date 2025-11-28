@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check changed files (docs-only gate)
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Enforce docs-only
