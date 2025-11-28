@@ -14,13 +14,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install GitHub CLI
+        uses: cli/cli-action@v2
+
       - name: Enforce docs-only
         run: |
-          NON_DOCS=$(git diff --name-only HEAD^ HEAD | grep -v '^docs/')
+          PR=${{ github.event.pull_request.number }}
+          FILES=$(gh pr view "$PR" --json files --jq '.files[].path')
+
+          NON_DOCS=$(echo "$FILES" | grep -v '^docs/' || true)
+
           if [ -n "$NON_DOCS" ]; then
-            echo "Non-docs change present: $NON_DOCS"
+            echo "Non-docs file detected:"
+            echo "$NON_DOCS"
             exit 1
           fi
+
           echo "Docs-only change confirmed."
 
       - name: Auto-approve
@@ -34,3 +43,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.DOCS_BOT_TOKEN }}
         with:
           mergeMethod: squash
+
