@@ -13,14 +13,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Install GitHub CLI
         uses: cli/cli-action@v2
 
       - name: Enforce docs-only
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          PR=${{ github.event.pull_request.number }}
-          FILES=$(gh pr view "$PR" --json files --jq '.files[].path')
+          echo "Checking PR #$PR_NUMBER"
+          
+          FILES=$(gh pr view "$PR_NUMBER" --json files --jq '.files[].path')
+
+          echo "Changed files:"
+          echo "$FILES"
 
           NON_DOCS=$(echo "$FILES" | grep -v '^docs/' || true)
 
