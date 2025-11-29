@@ -1,14 +1,9 @@
-name: docs-auto-approve-merge
-
-on:
-  pull_request_target:
-    types: [opened, synchronize, reopened]
-
-permissions: write-all
-
 jobs:
   auto-approve-and-merge:
     runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ github.token }}
 
     steps:
       - name: Checkout
@@ -28,7 +23,6 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           echo "Checking PR #$PR_NUMBER"
-          
           FILES=$(gh pr view "$PR_NUMBER" --json files --jq '.files[].path')
 
           echo "Changed files:"
