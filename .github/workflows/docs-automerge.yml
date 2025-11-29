@@ -13,7 +13,6 @@ permissions:
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login != github.actor
     
     steps:
       - name: Validate docs-only changes
@@ -21,6 +20,7 @@ jobs:
         
       - name: Enable auto-merge
         run: |
+          echo "Enabling auto-merge for PR #${{ github.event.pull_request.number }}"
           gh pr merge ${{ github.event.pull_request.number }} --squash --auto
         env:
           GH_TOKEN: ${{ github.token }}
