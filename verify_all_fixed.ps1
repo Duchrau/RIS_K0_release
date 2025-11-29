@@ -1,13 +1,13 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-# Pfade
-$proj       = (Get-Location).Path
+# Korrekte Pfade (relativ zum Skript-Verzeichnis)
+$proj = (Get-Location).Path
 $releaseDir = Join-Path $proj 'release'
-$zipPath    = Join-Path $releaseDir 'RIS_K0_provenanced.zip'
-$shaPath    = Join-Path $releaseDir 'RIS_K0_provenanced.zip.sha256'
-$docsDir    = Join-Path $proj 'docs'
-$logsDir    = Join-Path $proj 'logs'
+$zipPath = Join-Path $releaseDir 'RIS_K0_provenanced.zip'
+$shaPath = Join-Path $releaseDir 'RIS_K0_provenanced.zip.sha256'
+$docsDir = Join-Path $proj 'docs'
+$logsDir = Join-Path $proj 'logs'
 
 # I/O-Ordner absichern
 New-Item -ItemType Directory -Force -Path $docsDir, $logsDir | Out-Null
@@ -18,7 +18,7 @@ if (!(Test-Path $zipPath) -or !(Test-Path $shaPath)) {
 }
 
 $expected = (Get-Content $shaPath -Raw).Trim().Split(" `t")[0].Split(' ')[0].ToLower()
-$actual   = (Get-FileHash -Algorithm SHA256 -Path $zipPath).Hash.ToLower()
+$actual = (Get-FileHash -Algorithm SHA256 -Path $zipPath).Hash.ToLower()
 
 "== SHA256 CHECK =="
 "expected: $expected"
