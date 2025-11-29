@@ -4,56 +4,44 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened]
 
-permissions: write-all
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   auto-approve-and-merge:
     runs-on: ubuntu-latest
-
-    env:
-      GH_TOKEN: ${{ github.token }}
+    if: github.event.pull_request.user.login != github.actor
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          ref: ${{ github.event.pull_request.base.ref }}
 
-      - name: Ensure GitHub CLI available
+      - name: Validate docs-only changes
         run: |
-          if ! command -v gh >/dev/null 2>&1; then
-            sudo apt-get update
-            sudo apt-get install -y gh
-          fi
-
-      - name: Enforce docs-only
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          echo "Checking PR #$PR_NUMBER"
-          FILES=$(gh pr view "$PR_NUMBER" --json files --jq '.files[].path')
-
-          echo "Changed files:"
-          echo "$FILES"
-
-          NON_DOCS=$(echo "$FILES" | grep -v '^docs/' || true)
-
-          if [ -n "$NON_DOCS" ]; then
-            echo "Non-docs file detected:"
-            echo "$NON_DOCS"
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          FILES=$(gh pr view $PR_NUMBER --json files --jq '.files[].path')
+          echo "Changed files: $FILES"
+          
+          # Check if any non-docs files are changed
+          if echo "$FILES" | grep -qv '^docs/'; then
+            echo "❌ Non-docs files detected. Failing..."
             exit 1
+          else
+            echo "✅ Docs-only changes confirmed"
           fi
+        env:
+          GH_TOKEN: ${{ secrets.DOCS_BOT_TOKEN }}
 
-          echo "Docs-only change confirmed."
-
-      - name: Auto-approve
+      - name: Auto-approve PR
         uses: hmarr/auto-approve-action@v3
         with:
           github-token: ${{ secrets.DOCS_BOT_TOKEN }}
 
-      - name: Auto-merge
-        uses: pascalgn/automerge-action@v0.16.3
+      - name: Enable auto-merge
+        run: |
+          gh pr merge ${{ github.event.pull_request.number }} --squash --auto
         env:
-          GITHUB_TOKEN: ${{ secrets.DOCS_BOT_TOKEN }}
-        with:
-          mergeMethod: squash
+          GH_TOKEN: ${{ secrets.DOCS_BOT_TOKEN }}
