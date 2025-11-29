@@ -1,4 +1,4 @@
-name: docs-auto-approve-merge
+name: docs-auto-merge
 
 on:
   pull_request:
@@ -11,16 +11,14 @@ permissions:
   pull-requests: write
 
 jobs:
-  auto-approve-and-merge:
+  auto-merge:
     runs-on: ubuntu-latest
-
+    if: github.event.pull_request.user.login != github.actor
+    
     steps:
-      - name: Check docs-only changes
-        run: echo "✅ Docs-only PR detected - would auto-merge"
-
-      - name: Auto-approve PR
-        uses: hmarr/auto-approve-action@v3
-
+      - name: Validate docs-only changes
+        run: echo "✅ Docs-only PR detected - enabling auto-merge"
+        
       - name: Enable auto-merge
         run: |
           gh pr merge ${{ github.event.pull_request.number }} --squash --auto
