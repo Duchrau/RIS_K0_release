@@ -1,0 +1,50 @@
+name: docs-auto-approve
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  auto-approve:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Ensure GitHub CLI available
+        run: |
+          if ! command -v gh >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y gh
+          fi
+
+      - name: Enforce docs-only
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "Checking PR #$PR_NUMBER"
+          FILES=$(gh pr view "$PR_NUMBER" --json files --jq '.files[].path')
+
+          echo "Changed files:"
+          echo "$FILES"
+
+          NON_DOCS=$(echo "$FILES" | grep -v '^docs/' || true)
+
+          if [ -n "$NON_DOCS" ]; then
+            echo "Non-docs file detected:"
+            echo "$NON_DOCS"
+            exit 1
+          fi
+
+          echo "Docs-only change confirmed."
+
+      - name: Auto-approve
+        uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.DOCS_BOT_TOKEN }}
