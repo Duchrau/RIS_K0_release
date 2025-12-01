@@ -1,0 +1,11 @@
+﻿{
+    "generated_utc":  "2025-12-01T16:31:43Z",
+    "files":  [
+                  {
+                      "path":  "kernel/objects_K0.json",
+                      "sha256":  "0cab103ebbd0dc0df46834f0c11d0038770276bacc3f257c31d27c42345d6f2d",
+                      "size":  134
+                  }
+              ],
+    "version":  "1.0"
+}
