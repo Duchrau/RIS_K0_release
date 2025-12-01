@@ -1,213 +1,127 @@
-# RIS K0 — Technical Overview (Provenanced Model)
+# RIS K0 --- Technical Deep Dive
 
-> Pending references to fill before publishing:
->
-> * Release tag: `__________________________`
-> * Bundle filename: `__________________________.zip`
-> * Expected maintainer fingerprint (ED25519, SSH-style): `__________________________`
-> * Source-Date-Epoch (optional): `__________________________`
-> * Semantic namespace hash (optional): `__________________________`
-
-Status: **ARCHIVE_LOCKED**
-Scope: factual description of the canonical RIS K0 release bundle, its provenance layer, verification flow, and internal structure. All content refers to the artifacts contained in `RIS_K0_provenanced.zip`. All hashes and signatures are immutable.
+Status: ARCHIVE_LOCKED  
+Scope: Technical details of the RIS K0 release, bundle structure, and verification mechanisms.
 
 ---
 
-## 1. Release Structure
+## 1. Bundle Composition
 
-The canonical release consists of:
+The RIS K0 Bundle follows a strict layered model:
 
-1. `RIS_K0_provenanced.zip`
-2. `RIS_K0_provenanced.zip.sha256`
+### 1.1 Core Layer
+- `bundle_root/` – Core model content
+  - `kernel/objects_K0.json` – Kernel object definitions
+  - `views/` – Derived representations
+  - `reports/` – Statistical analyses
+  - `logs/` – Migration and operations logs
 
-   * Format follows GNU sidecar convention (two spaces between hash and filename).
-   * Verifiers should compare the 64-hex digest; incidental whitespace is not material.
+### 1.2 Documentation Layer
+- `docs/` – Public documentation
+  - All files are UTF-8 (no BOM), LF-only
+  - ASCII-only where possible, TeX macros for mathematics
+  - RFS/FPC as doc-only, no kernel IDs
 
-Consumers verify the ZIP, extract it, then validate provenance and signature.
-
----
-
-## 2. Verification Overview
-
-### 2.1 ZIP Integrity (SHA256)
-
-* Hash file: `RIS_K0_provenanced.zip.sha256`
-* Format: `<sha256>␠␠RIS_K0_provenanced.zip`
-* Acceptance criterion: computed SHA256 of the ZIP equals the reference digest.
-
-### 2.2 Provenance and Signature (OpenSSH)
-
-All provenance files live in:
-
-```
-provenance/
-  manifest.json
-  provenance.json
-  semantic_hash_ns.txt
-  source_date_epoch.txt
-  byte_hash.txt
-  byte_hash.txt.sig
-  allowed_signers.txt
-```
-
-Signature verification:
-
-```
-ssh-keygen -Y verify \
-  -f provenance/allowed_signers.txt \
-  -I maintainer \
-  -n RIS_K0 \
-  -s provenance/byte_hash.txt.sig < provenance/byte_hash.txt
-```
-
-Expected signer fingerprint (ED25519), compare against the published value in release notes:
-
-```
-SHA256:__________________________
-```
-
-Acceptance criterion: signature verification success with the published maintainer identity.
+### 1.3 Provenance Layer
+- `provenance/` – Integrity and authentication data
+  - Complete verification chain from byte-level to signature
+  - Deterministic build metadata
+  - Machine-readable manifests
 
 ---
 
-## 3. Provenance Model
+## 2. Verification Architecture
 
-The provenance system encodes four orthogonal components. All files are ASCII, LF-only.
+### 2.1 Multi-Layer Verification
+1. **Byte Integrity** – SHA256/SHA512 over ZIP
+2. **Structural Integrity** – Manifest matching
+3. **Semantic Integrity** – Namespace hash (optional)
+4. **Authenticity** – ED25519 signature over byte-hash
+5. **State Verification** – ARCHIVE_LOCKED status
 
-### 3.1 Semantic Namespace (optional but recommended)
-
-**`semantic_hash_ns.txt`**
-Single-line, stable hash summarizing the conceptual namespace of the model (not a byte-level digest).
-Purpose: identifies the abstract namespace used by the bundle’s specifications.
-
-### 3.2 Deterministic Build Origin
-
-**`source_date_epoch.txt`**
-UNIX epoch timestamp used to stabilize time-dependent build metadata.
-Purpose: contributes to reproducible packaging by pinning the build epoch.
-
-### 3.3 Byte-Level Canonical Integrity
-
-**`byte_hash.txt`**
-Canonical digest over all byte-relevant content in the release.
-Recommended algorithm: SHA512; format: single line of hex.
-
-**`byte_hash.txt.sig`**
-Detached ED25519 signature produced by `ssh-keygen -Y sign` over `byte_hash.txt`.
-
-**`allowed_signers.txt`**
-OpenSSH allowed-signers file declaring the maintainer’s public key and identity label used at verification (`-I maintainer`) and the expected namespace (`-n RIS_K0`).
-
-### 3.4 Manifest
-
-**`manifest.json`**
-Machine-readable mapping of all canonical files in the ZIP (forward-slash path separators), including `path` and `size` per entry.
-Purpose: enables strict ZIP↔manifest set equality checks.
-
-### 3.5 Meta-Record
-
-**`provenance.json`**
-Records meta-information (tool versions, timestamps, digests, release state).
-Allowed status values: `"DRAFT"`, `"FROZEN"`, `"ARCHIVE_LOCKED"`.
-Acceptance criterion: `"status": "ARCHIVE_LOCKED"` for a public, frozen release.
+### 2.2 Tooling Requirements
+- **Windows:** PowerShell 5+, OpenSSH Client, Get-FileHash
+- **POSIX:** sha256sum, unzip, OpenSSH ≥ 8.2
+- **Cross-platform:** Git (for OpenSSH on Windows)
 
 ---
 
-## 4. Canonical Verification Flow
+## 3. Deterministic Build Principles
 
-**Sequence:**
+### 3.1 Fixed Parameters
+- SOURCE_DATE_EPOCH – UNIX timestamp for reproducible builds
+- Locale: C (fixed for string operations)
+- Encoding: UTF-8 without BOM, LF line endings
+- Path normalization: forward slashes (/) in all manifests
 
-```
-ZIP
-  → SHA256 verification
-  → Extract bundle_root/
-  → Read release/manifest.json (if present at top-level; otherwise provenance/manifest.json)
-  → Read provenance/byte_hash.txt
-  → Verify provenance/byte_hash.txt.sig via provenance/allowed_signers.txt
-  → Confirm provenance/provenance.json.status == "ARCHIVE_LOCKED"
-  → OK
-```
-
-**Mermaid diagram (informative):**
-
-```mermaid
-flowchart TD
-  A[ZIP] --> B[SHA256 verify]
-  B --> C[Extract]
-  C --> D[manifest.json]
-  C --> E[byte_hash.txt]
-  E --> F[byte_hash.txt.sig]
-  F --> G[allowed_signers.txt]
-  G --> H[Signature OK]
-  H --> I[Status: ARCHIVE_LOCKED]
-```
-
-Acceptance criteria at each stage are binary; any failure invalidates the artifact.
+### 3.2 Text Discipline
+- All text files: final newline required
+- ASCII-only in core paths (provenance/, manifest.json)
+- TeX macros instead of Unicode in mathematics
+- PRE_FORMAL blocks with strict FSM
 
 ---
 
-## 5. Bundle Layout
+## 4. Security Considerations
 
-Illustrative layout (authoritative set is defined by `manifest.json`):
+### 4.1 Signature Scheme
+- Algorithm: ED25519 (via OpenSSH ssh-keygen)
+- Signature over byte-hash, not over ZIP directly
+- Allowed-signers file with specific namespace (-n RIS_K0)
+- Fingerprint verification optional but recommended
 
-```
-bundle_root/
-  README.txt
-  views/
-  spec/
-  kernel/
-    objects_K0.json
-  reports/
-    kernel_stats.tsv
-  logs/
-    migration_log.tsv
-  docs/                # optional, ASCII/LF
-
-provenance/
-  manifest.json
-  provenance.json
-  semantic_hash_ns.txt
-  source_date_epoch.txt
-  byte_hash.txt
-  byte_hash.txt.sig
-  allowed_signers.txt
-```
-
-Notes:
-
-* Paths in `manifest.json` use `/` separators independent of platform.
-* Directory entries may be omitted from the manifest; equality is over file entries.
+### 4.2 Tamper Resistance
+- ARCHIVE_LOCKED status prevents re-packaging
+- Sidecar hashes must stay next to ZIP
+- Manifest matching detects structure changes
+- Signature verification requires correct namespace
 
 ---
 
-## 6. Policies and Constraints
+## 5. Extension Points
 
-* **ARCHIVE_LOCKED**: no re-packing, no mutation of ZIP or sidecars. Distribution must preserve the sidecars.
-* **Encoding**: all textual artifacts are UTF-8 without BOM, LF-only.
-* **Docs discipline**: public documentation is ASCII/LF and machine-linted.
-* **RFS/FPC**: documents under `docs/` are informational; they do not introduce kernel IDs.
-* **Verification**: consumers MAY implement equivalent verification; acceptance must match the criteria in Sections 2 and 4.
+### 5.1 Optional Components
+- Semantic namespace hash – for conceptual identification
+- Source date epoch – for build reproducibility
+- Additional attestations – future governance extensions
 
----
-
-## 7. Compatibility
-
-* **OpenSSH**: `ssh-keygen -Y verify` requires OpenSSH ≥ 8.2.
-* **Windows**: use built-in OpenSSH client feature or recent Git for Windows which bundles OpenSSH.
-* **Hash tools**: `sha256sum` on POSIX; `Get-FileHash` on PowerShell.
+### 5.2 Versioning
+- K0 – current version, archive-locked
+- K1 – documented factorization route (doc-only)
+- Future versions – governed by governance process
 
 ---
 
-## 8. Release Notes Binding (informative)
+## 6. Best Practices for Consumers
 
-The public release notes MUST publish:
+### 6.1 Verification Workflow
+1. Always run complete verification path
+2. Verify maintainer key fingerprint
+3. Don't skip manifest matching
+4. Check for ARCHIVE_LOCKED status
 
-* the bundle filename,
-* the expected ED25519 fingerprint of the maintainer key, and
-* any optional semantic/build values (namespace hash, Source-Date-Epoch).
-
-These values are considered part of the verification contract for the release.
+### 6.2 Distribution Guidelines
+- Always distribute ZIP and sidecars together
+- Don't modify the bundle
+- If uncertain: run complete verification again
+- Contact maintainer on verification failures
 
 ---
 
-This overview describes the canonical frozen state of the RIS K0 release and its full, machine-checkable verification pathway.
+## 7. Compliance and Auditing
+
+### 7.1 Audit Trail
+- All verification steps are deterministic
+- Each step has binary pass/fail criteria
+- Complete provenance chain is machine-verifiable
+- Status transitions are documented
+
+### 7.2 Reproducibility
+- Bundle can be reproduced from verified sources
+- All build parameters are documented
+- Verification is platform-independent
+- Results are deterministic and comparable
+
+---
+
+This technical overview describes the architecture and principles behind the RIS K0 release bundle.
