@@ -2,8 +2,8 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 # Workflow-kompatible Pfade
-$zipPath = 'release\RIS_K0_provenanced.zip'
-$shaPath = 'release\RIS_K0_provenanced.zip.sha256'
+$zipPath = 'release\RIS_K0_v1.0.0_provenanced.zip'
+$shaPath = 'release\RIS_K0_v1.0.0_provenanced.zip.sha256'
 
 # SHA256 prüfen
 if (!(Test-Path $zipPath) -or !(Test-Path $shaPath)) { 
@@ -21,3 +21,4 @@ if ($expected -ne $actual) {
 } else { 
     "RESULT  : OK" 
 }
+
