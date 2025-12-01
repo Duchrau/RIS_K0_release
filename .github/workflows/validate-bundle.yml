@@ -1,0 +1,15 @@
+﻿name: Validate Bundle
+on:
+  push:
+    paths:
+      - 'release/**'
+      - 'provenance/**'
+  workflow_dispatch:
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Placeholder
+        run: echo "Bundle validation will be implemented in spec v1.1"
