@@ -1,2 +1,22 @@
-*.ps1 text eol=crlf
-*.yml text eol=lf
+# Auto-convert line endings to LF on checkout
+* text=auto eol=lf
+
+# Text file extensions from spec v1.1
+*.md text
+*.txt text
+*.json text
+*.yml text
+*.yaml text
+*.tsv text
+*.py text
+.editorconfig text
+.gitattributes text
+*.svg text
+*.mdx text
+
+# Binary files
+*.pdf binary
+*.zip binary
+*.png binary
+*.jpg binary
+*.jpeg binary
