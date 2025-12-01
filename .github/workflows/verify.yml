@@ -19,7 +19,7 @@ jobs:
 
       - name: Ensure release zip exists
         run: |
-          $zip = 'release\RIS_K0_provenanced.zip'
+          $zip = 'release\RIS_K0_v1.0.0_provenanced.zip'
           if (-not (Test-Path $zip -PathType Leaf)) { throw "Missing $zip" }
 
       - name: Sanity-path-check
@@ -27,7 +27,7 @@ jobs:
           $bad = Get-ChildItem -Recurse -File -Include verify*.ps1, *_verify*.ps1 |
             Select-String -Pattern '(?<!release[\\/])RIS_K0_provenanced\.zip'
           if ($bad) { $bad | Format-List Path,LineNumber,Line; throw "Bad path usage in verify scripts" }
-          "OK: verify scripts use release\\RIS_K0_provenanced.zip"
+          "OK: verify scripts use release\\RIS_K0_v1.0.0_provenanced.zip"
 
       - name: Run verify scripts
         run: |
@@ -37,3 +37,4 @@ jobs:
             Write-Host "RUN: $s"
             & $s
           }
+
