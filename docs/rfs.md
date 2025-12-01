@@ -127,7 +127,7 @@ Before commit:
 
     - One block per marker
 
-4.  No Unicode glyphs (no curly quotes, no ≤, no ∘, no typographic
+4.  No Unicode glyphs (no curly quotes, no â‰¤, no âˆ˜, no typographic
     prime).
 
 5.  No kernel identifiers or RELATION usage.

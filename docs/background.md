@@ -117,7 +117,7 @@ Use exactly docs/ (lowercase). CI is case-sensitive.
 ### ASCII-only zones
 All content in docs/rfs/** and docs/metaframe/** must be 7-bit ASCII.
 In math blocks use TeX macros: \\circ, \\le, \\subseteq, etc.
-Do not paste Unicode glyphs such as ≤, ∘, typographic quotes, or primes.
+Do not paste Unicode glyphs such as â‰¤, âˆ˜, typographic quotes, or primes.
 
 ### Line endings
 LF-only for all text. Final newline required.

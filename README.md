@@ -1,128 +1,117 @@
-# RIS K0 — Reversible–Irreversible System (ARCHIVE_LOCKED)
+[![verify](https://github.com/Duchrau/RIS_K0_release/actions/workflows/verify.yml/badge.svg)](https://github.com/Duchrau/RIS_K0_release/actions/workflows/verify.yml)
 
-> Pending references to fill once the new governance is finalized:
->
-> * Maintainer key fingerprint: `__________________________`
-> * Current release tag: `__________________________`
-> * Canonical ZIP filename under `release/`: `__________________________`
-> * If `spec/` remains part of this repository, list the normative files below: `__________________________`
+#RIS K0 — Provenanced Model (ARCHIVE_LOCKED)
 
-A canonical, reproducible bundle of the **RIS K0** model. This repository ships the sealed release artifact plus machine-verifiable documentation. No metaphysical or cognitive claims are made; the scope is technical and verifiable.
+This repository provides the frozen, provenance-verified RIS K0 release bundle.
+All integrity, signature and provenance data is immutable.
 
-* **RIS** = **Reversible–Irreversible System** (system framing)
-* **RFS** = **Reflexive Fixed-Point System** (doc-only, K0-external)
-* **FPC** = **Fixpoint Core** (doc-only; K0 axioms and K1 factorization route)
+Status: **ARCHIVE_LOCKED**
 
-## Status
+---
 
-* **Release mode:** `ARCHIVE_LOCKED`
-* **Reproducibility contract:** ASCII-only text, LF line endings, deterministic manifests, sidecar hashes
-* **Doc layers:** RFS and FPC are **informational** and introduce no kernel IDs
+## Quick Verify
 
-## What this repository contains
+### 1) Required files (same directory)
+- `RIS_K0_provenanced.zip`
+- `RIS_K0_provenanced.zip.sha256`  
+  (GNU format: **two spaces** between hash and filename)
 
-* The canonical release archive under `release/` with sidecar hashes and manifest
-* Documentation under `docs/` with strict formatting rules for verifiability
-* Local verification scripts and CI workflows to validate the bundle
+### 2) SHA256 check
 
-This repository is **meta-independent**: no external lint or cross-repo hooks are required for a green build.
+**PowerShell**
+```powershell
+$h   = (Get-FileHash .\RIS_K0_provenanced.zip -Algorithm SHA256).Hash.ToLower()
+$ref = ([regex]::Match((Get-Content .\RIS_K0_provenanced.zip.sha256 -Raw),'(?i)[0-9a-f]{64}')).Value.ToLower()
+$h -eq $ref
+POSIX
 
-## Repository layout
+sh
+Code kopieren
+sha256sum -c RIS_K0_provenanced.zip.sha256
+3) Extract
+sh
+Code kopieren
+unzip RIS_K0_provenanced.zip
+Results:
 
-```
-/
-├─ release/                  # Canonical release artifacts (sealed)
-│  ├─ RIS_K0_provenanced.zip
-│  ├─ RIS_K0_provenanced.zip.sha256
-│  └─ manifest.json
-│
-├─ docs/                     # Public documentation (machine-verifiable)
-│  ├─ background.md
-│  ├─ consumer_guide.md
-│  ├─ fixpoint_core_spec_v1_0.md        # FPC (doc-only)
-│  ├─ overview.md
-│  ├─ overview.pdf                        # binary; excluded from text checks
-│  ├─ readme.md                           # (this document if stored under docs/)
-│  ├─ reflexive_fixpoint_system.md        # RFS (doc-only)
-│  ├─ technical_overview.md
-│  └─ verification.md
-│
-├─ tools/
-│  └─ lint_docs_layout.py     # ASCII/LF + PRE_FORMAL checks (docs-only)
-│
-├─ build.ps1                  # local pack helper (no re-pack for locked releases)
-├─ ris-check.ps1              # sidecar + manifest + LF/UTF-8 checks
-└─ .github/workflows/
-   ├─ validate-docs.yml       # docs-only lint; fast, isolated
-   └─ validate-bundle.yml     # conditional; runs only if bundle-relevant paths change
-```
+bundle_root/
 
-> If a `spec/` directory is retained in this repository, list it explicitly here and mark it **normative**. Otherwise, keep specs out of this bundle to preserve a clean separation of concerns.
+provenance/
 
-## Documentation index
+4) Signature verification
+sh
+Code kopieren
+ssh-keygen -Y verify \
+  -f provenance/allowed_signers.txt \
+  -I maintainer \
+  -n RIS_K0 \
+  -s provenance/byte_hash.txt.sig < provenance/byte_hash.txt
+Expected ED25519 fingerprint:
 
-* **Overview:** [`docs/overview.md`](docs/overview.md)  |  PDF: `docs/overview.pdf`
-* **Background:** [`docs/background.md`](docs/background.md)
-* **Technical overview:** [`docs/technical_overview.md`](docs/technical_overview.md)
-* **Verification guide:** [`docs/verification.md`](docs/verification.md)
-* **Consumer guide:** [`docs/consumer_guide.md`](docs/consumer_guide.md)
-* **RFS (doc-only):** [`docs/reflexive_fixpoint_system.md`](docs/reflexive_fixpoint_system.md)
-* **FPC (doc-only):** [`docs/fixpoint_core_spec_v1_0.md`](docs/fixpoint_core_spec_v1_0.md)
+ruby
+Code kopieren
+SHA256:En+c93lQGMAnjkd680oK0DPKYq3tpZ4ug8QXnjTiZys
+5) Final state
+Open:
 
-### RFS/FPC guardrails (docs-only)
+bash
+Code kopieren
+provenance/provenance.json
+Required:
 
-* No kernel IDs are introduced in these files.
-* **PRE_FORMAL** blocks are allowed only in:
+ini
+Code kopieren
+status = "ARCHIVE_LOCKED"
+Documentation
+Quick verification: [CONSUMERS.md](CONSUMERS.md)
 
-  * `docs/reflexive_fixpoint_system.md`
-  * `docs/fixpoint_core_spec_v1_0.md`
-* PRE_FORMAL format:
+Full verification: [VERIFY.md](VERIFY.md)
 
-  ```
-  [PRE_FORMAL id="rfs#eqN" | "metaframe#eqN" | "metaframe#eq_factN" | "metaframe#L<N>"]
-  $$
-  ... TeX (7-bit ASCII; use \le, \circ, \subseteq) ...
-  $$
-  ```
-* ASCII policy: strict **7-bit ASCII** in docs, including inside `$$...$$`.
-  Use TeX macros rather than Unicode glyphs.
+Technical overview (Markdown): [Overview.md](Overview.md)
 
-## Verification (summary)
+Technical overview (PDF): [Overview.pdf](Overview.pdf)
 
-See [`docs/verification.md`](docs/verification.md) for complete, step-by-step instructions.
+Release Facts
+makefile
+Code kopieren
+ZIP:                  RIS_K0_provenanced.zip
+ZIP_SHA256:           (see RIS_K0_provenanced.zip.sha256)
+BYTE_HASH_SHA512:     contents of provenance/byte_hash.txt
+SEMANTIC_NS_SHA256:   contents of provenance/semantic_hash_ns.txt
+SIGNER_FPR:           SHA256:En+c93lQGMAnjkd680oK0DPKYq3tpZ4ug8QXnjTiZys
+STATUS:               ARCHIVE_LOCKED
+Bundle Layout
+pgsql
+Code kopieren
+bundle_root/
+  README.txt
+  views/
+  spec/
+  kernel/
+    objects_K0.json
+  reports/
+    kernel_stats.tsv
+  logs/
+    migration_log.tsv
+  docs/ (optional)
 
-* **Sidecars:** SHA-256 and SHA-512 of the ZIP must match the published sidecar files.
-* **Semantic hash:** Derived from `(sha256|sha512)` pair; must match `provenance/semantic_hash.txt` if present.
-* **Manifest matching:** ZIP entries must equal `release/manifest.json` paths (normalized to `/`).
-* **Text discipline:** All text files in the repository must be UTF-8 (no BOM), LF-only, final newline present.
-* **Docs lint:** PRE_FORMAL FSM, ASCII in math blocks, and required literals in RFS/FPC are enforced.
+provenance/
+  manifest.json
+  provenance.json
+  semantic_hash_ns.txt
+  source_date_epoch.txt
+  byte_hash.txt
+  byte_hash.txt.sig
+  allowed_signers.txt
+This repository contains the canonical, frozen RIS K0 bundle with full reproducible provenance and signature verification.
+---
 
-> This bundle is archive-locked. Re-packing the ZIP is out of scope and must not be attempted.
+## Related Non-Normative Releases
 
-## Policies and conventions
-
-* **Encoding:** UTF-8 (no BOM)
-* **Line endings:** LF only
-* **Final newline:** required for all text files
-* **Text whitelist:** `.md,.txt,.json,.yml,.yaml,.mdx,.cff,.editorconfig,.gitattributes`
-* **Binary examples (ignored by text checks):** `.pdf,.png,.jpg,.zip`
-* **Paths:** use forward slashes (`/`) in manifests and during ZIP entry normalization
-
-## Development note
-
-This is the initial public K0 release. The repository retains full history; the release artifact is reproducible and machine-verified. The process focused on hardening toward cross-platform, verifiable delivery (provenance, ASCII/LF discipline, deterministic manifests, one-button verification).
-
-## Trust material
-
-* Maintainer key fingerprint: `__________________________`
-* Allowed signers (if applicable): `__________________________`
-* Contact for security disclosures: `__________________________`
-
-## License
-
-* Code and scripts: MIT
-* Documentation: CC-BY-4.0
+### [RIS_RFS_release](https://github.com/Duchrau/RIS_RFS_release)
+*Reflexive Fixed-Point System (non-normative background release)*  
+Defines minimal operator conditions under which reflexive transformations become locally idempotent.  
+Independent from the RIS Kâ‚€ kernel; provides theoretical scaffolding for recursive invariance.
 
 
 
-If any of the placeholders above remain blank after governance finalization, treat that as a release-blocking issue and update this file before publishing.
