@@ -19,3 +19,10 @@ docs/handover_receipt_*.*
 docs/handover_README_*.*
 *.bak
 *.bak_*
+ris_k0_key
+RIS_K0_*.zip
+RIS_K0_*.zip.sha256
+RIS_K0_*.zip.sha512
+ris_k0_key.pub
+bundle_root/
+provenance/
