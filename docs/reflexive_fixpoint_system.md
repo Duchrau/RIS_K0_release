@@ -1,7 +1,7 @@
-# Reflexive Fixed-Point System (RFS) — doc-only
+# Reflexive Fixed-Point System (RFS) --- doc-only
 
-Version: 1.0.0
-Status: Informational (K0-external, documentation-only)
+Version: 1.0.0  
+Status: Informational (K0-external, documentation-only)  
 Policy: ASCII-only, LF-only, final newline
 
 ## 1. Purpose
@@ -10,27 +10,25 @@ RFS defines a minimal documentation scaffold used alongside the K0 kernel. It fi
 
 ## 2. Scope and boundaries
 
-* K0 isolation: RFS defines no kernel IDs and binds none.
-* Doc-only location: all RFS content lives in `docs/rfs/`.
-* Operators referenced: names are ASCII identifiers `THETA`, `PHI`, `LAMBDA`, `T`. Their semantics are not enforced by K0; they are placeholders for documentation.
-* RELATION: not used at K0.
-* ASCII discipline: 7-bit ASCII only in this file. In math zones use TeX macros (e.g., `\circ`, `\le`, `\subseteq`), not Unicode glyphs.
+- **K0 isolation:** RFS defines no kernel IDs and binds none.
+- **Doc-only location:** all RFS content lives in `docs/rfs/`.
+- **Operators referenced:** names are ASCII identifiers THETA, PHI, LAMBDA, T. Their semantics are not enforced by K0; they are placeholders for documentation.
+- **RELATION:** not used at K0.
+- **ASCII discipline:** 7-bit ASCII only in this file. In math zones use TeX macros (e.g., `\circ`, `\le`, `\subseteq`), not Unicode glyphs.
 
 ## 3. Mandatory literals (MUST appear verbatim)
 
 These three lines are the doc-level anchors. CI searches for these exact byte sequences.
-
-```
 {"type":"KL","support":"S_adm"}
 forall x,y in S_adm: D(PHI(x), PHI(y)) <= D(x,y)
 T(S_adm) subset_of S_adm
-```
+
 
 Interpretation (non-normative):
 
-* The divergence used in RFS documentation is the KL type, asserted on the admissible subset `S_adm`.
-* `PHI` is documented as non-expansive on `S_adm` with respect to the chosen divergence `D`.
-* The transformation `T` is documented as closed over `S_adm`.
+- The divergence used in RFS documentation is the KL type, asserted on the admissible subset S_adm.
+- PHI is documented as non-expansive on S_adm with respect to the chosen divergence D.
+- The transformation T is documented as closed over S_adm.
 
 No kernel behavior follows from these lines at K0; they are documentation claims tied to CI checks.
 
@@ -38,10 +36,10 @@ No kernel behavior follows from these lines at K0; they are documentation claims
 
 PRE_FORMAL markers are allowed in `docs/rfs/` and must follow a strict finite-state pattern:
 
-* The marker line is the only token on its line: `[PRE_FORMAL id="rfs#eqN"]` with `N` a positive integer.
-* It is immediately followed by a line containing exactly `$$`.
-* Exactly one `$$ ... $$` block per marker.
-* Block content must be ASCII; use TeX macros only.
+- The marker line is the only token on its line: `[PRE_FORMAL id="rfs#eqN"]` with N a positive integer.
+- It is immediately followed by a line containing exactly `$$`.
+- Exactly one `$$ ... $$` block per marker.
+- Block content must be ASCII; use TeX macros only.
 
 ### Example PRE_FORMAL blocks (illustrative, ASCII-safe)
 
@@ -60,37 +58,34 @@ $$
 f'(\rho^*) < 0
 $$
 
-IDs are canonicalized as `rfs#eqN` with `N` a positive integer.
+IDs are canonicalized as `rfs#eqN` with N a positive integer.
 
 ## 5. Interaction with FPC
 
-* RFS and FPC are independent documents.
-* RFS sets a divergence literal and a non-expansivity claim on `S_adm`.
-* FPC (in `docs/metaframe/fixpoint_core_spec_v1_0.md`) specifies a K0 axiom for idempotence and a K1 factorization route that can yield idempotence as a result when additional structure is enabled.
-* RFS does not assert or require any mapping between `PHI`, `LAMBDA`, and `T` beyond the doc-only claims in Section 3.
+- RFS and FPC are independent documents.
+- RFS sets a divergence literal and a non-expansivity claim on S_adm.
+- FPC (in `docs/metaframe/fixpoint_core_spec_v1_0.md`) specifies a K0 axiom for idempotence and a K1 factorization route that can yield idempotence as a result when additional structure is enabled.
+- RFS does not assert or require any mapping between PHI, LAMBDA, and T beyond the doc-only claims in Section 3.
 
 ## 6. Compliance checklist (author-facing)
 
 Before commit:
 
-1. Encoding and endings
+1. **Encoding and endings**
+   - 7-bit ASCII only; LF-only; final newline present.
 
-   * 7-bit ASCII only; LF-only; final newline present.
+2. **Mandatory literals present byte-exact:**
+   - `{"type":"KL","support":"S_adm"}`
+   - `forall x,y in S_adm: D(PHI(x), PHI(y)) <= D(x,y)`
+   - `T(S_adm) subset_of S_adm`
 
-2. Mandatory literals present byte-exact:
+3. **PRE_FORMAL FSM holds for every marker:**
+   - Marker line `[PRE_FORMAL id="rfs#eqN"]`
+   - Next line is exactly `$$`
+   - ASCII content only inside
+   - Closing `$$`
+   - One block per marker
 
-   * `{"type":"KL","support":"S_adm"}`
-   * `forall x,y in S_adm: D(PHI(x), PHI(y)) <= D(x,y)`
-   * `T(S_adm) subset_of S_adm`
+4. **No Unicode glyphs** (no curly quotes, no ≤, no ∘, no typographic prime).
 
-3. PRE_FORMAL FSM holds for every marker:
-
-   * Marker line `[PRE_FORMAL id="rfs#eqN"]`
-   * Next line is exactly `$$`
-   * ASCII content only inside
-   * Closing `$$`
-   * One block per marker
-
-4. No Unicode glyphs (no curly quotes, no ≤, no ∘, no typographic prime).
-
-5. No kernel identifiers or RELATION usage.
+5. **No kernel identifiers or RELATION usage.**
