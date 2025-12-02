@@ -1,0 +1,45 @@
+{
+  "files": [
+    {
+      "sha256": "0cab103ebbd0dc0df46834f0c11d0038770276bacc3f257c31d27c42345d6f2d",
+      "path": "kernel/objects_K0.json"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "logs/KEEP"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "reports/KEEP"
+    },
+    {
+      "sha256": "7fe19c291e83c1cfda606cd17639db99a3237efe9404b361629aa12863ceb2eb",
+      "path": "spec/DIRECTORY_SPEC_v1_0.md"
+    },
+    {
+      "sha256": "8e2500437cbbe8f7f365ec3ca38d7759cbba5c50029105e670245c1c6e6f8964",
+      "path": "spec/FILE_RULES_SPEC_v1_0.md"
+    },
+    {
+      "sha256": "ef442e000ac31f042f050d3d275477da177b6d1477db0404a5e9a9719820a295",
+      "path": "spec/GOVERNANCE_SPEC_v1_0.md"
+    },
+    {
+      "sha256": "753e334441defede4afa3c8404bbe006f6c2b9a9d92f2731ea3bd4cd9774fcd2",
+      "path": "spec/non_normative_META_SPEC_v1_0.md"
+    },
+    {
+      "sha256": "4a8752170ba740db8bfd52e1b4f7ff2cb383ce2766def0d18b8e730574418465",
+      "path": "spec/SYSTEM_SPEC_v1_0.md"
+    },
+    {
+      "sha256": "459525e830dee6e07820e6f32c81931bd553b43c107fb0aecac54be3723a9149",
+      "path": "tools/lint_docs_layout.py"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "views/KEEP"
+    }
+  ]
+}
+
