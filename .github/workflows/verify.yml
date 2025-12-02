@@ -17,9 +17,9 @@ jobs:
           fetch-depth: 0
 
       - name: Install PowerShell
-        uses: actions/setup-pwsh@v2
+        uses: PowerShell/PowerShell-For-GitHub-Actions@v1
         with:
-          pwsh-version: '7.4.1'
+          version: "7.4.1"
 
       - name: Install Python
         uses: actions/setup-python@v5
@@ -30,4 +30,3 @@ jobs:
         shell: pwsh
         run: |
           pwsh -File verify_all.ps1
-
