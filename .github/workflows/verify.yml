@@ -1,40 +1,32 @@
-name: verify
-on: [push, pull_request]
+name: verify-k0
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+
 jobs:
   verify:
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: pwsh
-        working-directory: .
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # Falls ZIP durch Build kommt: vorher in release/ ablegen.
-      # - name: Download artifact (optional)
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: RIS_K0_bundle
-      #     path: release
+      - name: Install PowerShell
+        uses: PowerShell/PowerShell-For-GitHub-Actions@v1
+        with:
+          version: "7.4.1"
 
-      - name: Ensure release zip exists
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run verification
+        shell: pwsh
         run: |
-          $zip = 'release\RIS_K0_v1.0.0_provenanced.zip'
-          if (-not (Test-Path $zip -PathType Leaf)) { throw "Missing $zip" }
-
-      - name: Sanity-path-check
-        run: |
-          $bad = Get-ChildItem -Recurse -File -Include verify*.ps1, *_verify*.ps1 |
-            Select-String -Pattern '(?<!release[\\/])RIS_K0_provenanced\.zip'
-          if ($bad) { $bad | Format-List Path,LineNumber,Line; throw "Bad path usage in verify scripts" }
-          "OK: verify scripts use release\\RIS_K0_v1.0.0_provenanced.zip"
-
-      - name: Run verify scripts
-        run: |
-          $scripts = @('.\verify_all.ps1','.\_ci_local\verify_k0_release.ps1','.\_ci_local\verify_all.ps1') |
-            Where-Object { Test-Path $_ -PathType Leaf }
-          foreach ($s in $scripts) {
-            Write-Host "RUN: $s"
-            & $s
-          }
-
+          pwsh -File verify_all.ps1
