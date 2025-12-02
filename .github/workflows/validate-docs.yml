@@ -1,9 +1,17 @@
 name: Validate Documentation
-on: [push, pull_request]
+
+on:
+  push:
+    paths:
+      - 'docs/**'
+  pull_request:
+    paths:
+      - 'docs/**'
 
 jobs:
   docs-ok:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: echo "Non-normative docs — skipping validation"
+      - name: Skip non-normative documentation
+        run: echo "Docs are non-normative. Skipping validation."
