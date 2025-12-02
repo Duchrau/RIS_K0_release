@@ -30,3 +30,4 @@ jobs:
         shell: pwsh
         run: |
           pwsh -File verify_all.ps1
+
