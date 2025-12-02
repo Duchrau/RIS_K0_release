@@ -1,1 +1,0 @@
-maintainer namespaces="RIS_K0" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA5X0U60mJZncnhG44zk6jCfHbCFUIRkbDOZ+OdZmU/y RIS_K0_Maintainer

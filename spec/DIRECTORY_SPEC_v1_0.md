@@ -1,46 +1,45 @@
-RIS/IES Directory Specification v1.0
-Source: INTERNAL
-Status: BASELINE
+# RIS K0 – DIRECTORY SPEC v1.0
+Status: NORMATIVE
 Encoding: UTF-8 (LF)
 
-Purpose
-Defines the minimal required directory layout for a valid RIS/IES kernel tree.
+## Purpose
+Defines the required top-level directory layout for a valid RIS K0 repository and release.
 
-Required Top-Level Directories
+## Required Top-Level Directories (normative)
+- bundle_root/
 - spec/
-  Contains invariant specifications, meta-rules, governance, and directory definitions.
-
-- docs/
-  Contains long-form converted documents (RELAX, ERRATA, MANIFEST, ROHKRPER).
-
-- views/
-  Contains rendered architectural perspectives. Non-normative but compliance-bound.
-
 - tools/
-  Contains deterministic helper scripts, hashing tools, and reproducible utilities.
 
+## Optional (non-normative)
+- docs/
+- provenance/        (working copy, never part of release)
+- devtools/
 - logs/
-  Contains append-only operational logs (migration, transforms).
+- tmp/
+- anything else not referenced by K0
 
-- reports/
-  Generated machine-view results, should be reproducible and traceable.
+## Release ZIP Rules
+release/K0_bundle.zip MUST contain:
+- bundle_root/**
+- spec/**
+- tools/** (only normative tools)
+- NO docs/**
+- NO provenance/**          (the repo working copy)
+- NO tmp/**
 
-- LICENSES/
-  All license files and acknowledgements.
+## End of File
 
-Files
-- README.txt (human-first summary of kernel purpose)
 
-Invariants
-- No executable binaries allowed in kernel tree.
-- All markdown files UTF-8 (LF).
-- No trailing spaces.
-- Final newline required.
+## Provenance Rules
+release/provenance/ MUST contain exactly:
+- manifest.json
+- semantic_hash_ns.txt
+- source_date_epoch.txt
+- byte_hash.txt
+- byte_hash.txt.sig (optional)
+- provenance.json
 
-[COMPLIANCE]
-Encoding: utf-8
-Newline: \n
-Tabs: 0
-Trailing_spaces: 0
-Final_lf: 1
-[/COMPLIANCE]
+No additional files are permitted.
+
+The repository-level provenance/ directory is NOT part of any release and MUST be ignored by normative processes.
+

@@ -1,1 +1,0 @@
-optional_semantic_namespace_hash_placeholder

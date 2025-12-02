@@ -1,4 +1,4 @@
-# Docs index
-- FPC K0: axioms -> docs/metaframe/fixpoint_core_spec_v1_0.md
-- FPC K1: factorization route -> docs/metaframe/fixpoint_core_spec_v1_0.md
-- RFS Core -> docs/rfs/rfs.md
+# RIS K0 – Documentation Index (Non-Normative)
+
+This directory provides explanatory material about K0.
+It contains no normative rules. Normativity exists only in spec/, tools/ (normative tools), and release/provenance/.

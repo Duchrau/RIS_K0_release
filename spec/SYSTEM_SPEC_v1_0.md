@@ -1,55 +1,61 @@
-RIS/IES System Specification v1.0
-Source: INTERNAL
-Status: BASELINE
+# RIS K0 – SYSTEM SPEC v1.0
+Status: NORMATIVE
 Encoding: UTF-8 (LF)
 
-Purpose
-Defines system-wide invariants for hashing, IDs, determinism, and metadata handling.
+## Purpose
+Defines the minimal system-wide invariants required for deterministic verification of a RIS K0 release.
 
-System Invariants
-- All hashes: SHA-512 (lowercase hex, 128 hex chars).
-- Secondary hash forms: SHA-256 allowed only for subtree or policy_subhash.
-- No MD5, SHA1, or truncated SHA variants allowed.
+## Hashing
+- Primary hash: SHA-256 (lowercase hex).
+- Used for:
+  - K0_bundle.zip
+  - provenance/semantic_hash_ns.txt
+  - provenance/byte_hash.txt
 
-Identifiers
-- UUIDv4 required for internal objects.
-- Ed25519 public keys allowed for signature verification.
-- No custom ID formats allowed.
+No alternative hash formats allowed.
 
-Determinism
-- Hashing must be stable across builders.
-- No timestamps except controlled SOURCE_DATE_EPOCH or documented provenance blocks.
-- No filesystem mtime usage inside semantic or audit layers.
+## Determinism
+- All normative content MUST be ASCII or UTF-8 (LF), without BOM.
+- No timestamps except source_date_epoch.txt inside release/provenance/.
+- No file mtimes, system times or builder-dependent markers may appear in normative artifacts.
 
-Ordering Rules
-- Lexicographic ordering for:
-  - manifest entries
-  - module lists
-  - Merkle leaf concatenation
+## Normative Scope
+Normative files and directories:
+- bundle_root/**
+- spec/**
+- tools/** (only normative tools listed in GOVERNANCE_SPEC)
+- release/provenance/manifest.json
+- release/provenance/semantic_hash_ns.txt
+- release/provenance/source_date_epoch.txt
+- release/provenance/byte_hash.txt
+- release/provenance/provenance.json
 
-JSON Format Rules
-- ASCII only where possible.
-- UTF-8 allowed but must avoid BOM.
-- Exactly one final newline.
+Non-normative:
+- docs/**
+- provenance/**          (repo working copy)
+- devtools/**, logs/**, tmp/**, etc.
 
-Allowed Numeric Forms
-- Binary64 floats only.
-- Hex-float profile allowed for audit channel.
-- No NaN, no Inf, no negative zero.
+## JSON Requirements
+- UTF-8 (LF)
+- No BOM
+- ASCII-safe keys
+- Exactly one final LF
 
-Metadata Requirements
-Each file MAY contain:
-- provenance block
-- compliance block
-- writer_report entry
-- handoff entry
+## End of File
 
-Metadata MUST be ASCII-safe and machine-parseable.
 
-[COMPLIANCE]
-Encoding: utf-8
-Newline: \n
-Tabs: 0
-Trailing_spaces: 0
-Final_lf: 1
-[/COMPLIANCE]
+## Normative Provenance
+Only the directory release/provenance/ is normative.
+
+Normative Provenance files:
+- manifest.json
+- semantic_hash_ns.txt
+- source_date_epoch.txt
+- byte_hash.txt
+- byte_hash.txt.sig (optional)
+- provenance.json
+
+No other files may appear in release/provenance/.
+
+Repository-level provenance/ is non-normative and MUST be ignored by verification tools.
+

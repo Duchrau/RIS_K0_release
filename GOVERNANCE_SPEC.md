@@ -1,36 +1,3 @@
-# RIS K0 – GOVERNANCE SPEC v1.0
-Status: NORMATIVE
-Encoding: UTF-8 (LF)
-
-## Purpose
-Defines what constitutes a K0 change and the rules governing modifications.
-
-## K0 Changes (require full verification + PR)
-Eine Änderung ist ein K0-Change, wenn sie betrifft:
-- bundle_root/kernel/objects_K0.json
-- spec/**
-- tools/** (nur normative Tools)
-- release/**
-- release/provenance/**
-
-## Non-K0 Changes (frei, ohne Governance-Zwang)
-- docs/**
-- provenance/**    (working copy)
-- devtools/**
-- .github/**
-- README.md (sofern keine normative Aussagen verändert werden)
-
-## Mixed Changes
-Wenn ein PR sowohl K0-Änderungen als auch non-normative Änderungen enthält:
-- K0-Teil MUSS vollständig K0-konform sein
-- Docs-Teil beeinflusst K0 niemals
-
-## Required CI Behavior
-- verify_all MUST succeed for any K0 change.
-- No merging to main without green verification.
-
-## End of File
-
 
 
 ## Normative Tools
