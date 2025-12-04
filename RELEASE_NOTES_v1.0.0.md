@@ -22,3 +22,6 @@ Run \./verify_all.ps1\ to validate release integrity.
 
 ## Provenance
 Complete provenance documents available in \elease/provenance/\.
+
+
+SHA256(K0_bundle.zip): 882f93cb3e2056458f27786bfc43ed66bf019805c1a0cf88289ec2a152c046a5
