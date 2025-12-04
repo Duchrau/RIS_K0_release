@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RIS/IES Operator Schema (K0)",
+  "type": "object",
+
+  "required": ["id", "operand_types", "return_type"],
+
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_\\-]+$"
+    },
+
+    "operand_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "int",
+          "float",
+          "string",
+          "bool",
+          "timestamp",
+          "uuid",
+          "sha512",
+          "hexfloat"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 4
+    },
+
+    "return_type": {
+      "type": "string",
+      "enum": [
+        "int",
+        "float",
+        "string",
+        "bool",
+        "timestamp",
+        "uuid",
+        "sha512",
+        "hexfloat"
+      ]
+    },
+
+    "description": {
+      "type": ["string", "null"]
+    }
+  },
+
+  "additionalProperties": false
+}

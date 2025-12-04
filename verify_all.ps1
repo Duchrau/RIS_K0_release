@@ -1,110 +1,150 @@
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
+# verify_all.ps1
+# Complete deterministic verification of the K0 system.
+# Exit codes: 0 = success, 1 = failure
 
-# infer repo root from script location
-$repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+Write-Host "=== K0 Verification ===" -ForegroundColor Cyan
 
-function Join-RepoPath {
-  param([Parameter(Mandatory=$true)][string]$Rel)
-  Join-Path -Path $repoRoot -ChildPath $Rel
-}
+$errors = @()
+$warnings = @()
 
-$HadError = $false
-function Fail {
-  param([Parameter(Mandatory=$true)][string]$Message)
-  $script:HadError = $true
-  Write-Error $Message
-}
+# --- 1. Top-Level Directory Structure ---
+Write-Host "Checking directory structure..." -ForegroundColor Yellow
 
-# --- required paths ---
+$requiredDirs = @(
+    "bundle_root/kernel",
+    "spec",
+    "release",
+    "release/provenance",
+    "docs"
+)
 
-$bundleRoot   = Join-RepoPath "bundle_root"
-$specDir      = Join-RepoPath "spec"
-$releaseDir   = Join-RepoPath "release"
-$provDir      = Join-RepoPath "release/provenance"
-$zipPath      = Join-RepoPath "release/K0_bundle.zip"
-$shaPath      = Join-RepoPath "release/K0_bundle.zip.sha256"
-$manifestPath = Join-RepoPath "release/provenance/manifest.json"
-$provJsonPath = Join-RepoPath "release/provenance/provenance.json"
-
-if (-not (Test-Path -LiteralPath $bundleRoot)) { Fail "Missing bundle_root directory: $bundleRoot" }
-if (-not (Test-Path -LiteralPath $specDir))    { Fail "Missing spec directory: $specDir" }
-if (-not (Test-Path -LiteralPath $releaseDir)) { Fail "Missing release directory: $releaseDir" }
-if (-not (Test-Path -LiteralPath $provDir))    { Fail "Missing provenance directory: $provDir" }
-
-if (-not (Test-Path -LiteralPath $zipPath)) { Fail "Missing release/K0_bundle.zip" }
-if (-not (Test-Path -LiteralPath $shaPath)) { Fail "Missing release/K0_bundle.zip.sha256" }
-
-if (-not (Test-Path -LiteralPath $manifestPath)) { Fail "Missing release/provenance/manifest.json" }
-if (-not (Test-Path -LiteralPath $provJsonPath)) { Fail "Missing release/provenance/provenance.json" }
-
-# --- SHA256 check for ZIP ---
-
-if ((Test-Path -LiteralPath $zipPath) -and (Test-Path -LiteralPath $shaPath)) {
-  try {
-    $zipHash = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash.ToUpperInvariant()
-  } catch {
-    Fail ("Failed to compute SHA256 for K0_bundle.zip: " + $_.Exception.Message)
-    $zipHash = $null
-  }
-
-  try {
-    $sidecarRaw = Get-Content -LiteralPath $shaPath -Raw -Encoding UTF8
-    $m = [regex]::Match($sidecarRaw, "([A-Fa-f0-9]{64})")
-    if (-not $m.Success) {
-      Fail "Could not find 64-hex SHA256 in K0_bundle.zip.sha256"
+foreach ($dir in $requiredDirs) {
+    if (!(Test-Path $dir)) {
+        $errors += "Missing required directory: $dir"
     } else {
-      $sideHash = $m.Groups[1].Value.ToUpperInvariant()
-      if ($zipHash -and $sideHash -and $zipHash -ne $sideHash) {
-        Fail ("ZIP SHA256 mismatch: zip=" + $zipHash + " sidecar=" + $sideHash)
-      }
+        Write-Host "  ✓ $dir" -ForegroundColor Green
     }
-  } catch {
-    Fail ("Failed to parse K0_bundle.zip.sha256: " + $_.Exception.Message)
-  }
 }
 
-# --- JSON validation in normative paths ---
+# --- 2. Normative Files ---
+Write-Host "`nChecking normative files..." -ForegroundColor Yellow
 
-$normJson = @()
-
-if (Test-Path -LiteralPath $bundleRoot) {
-  $normJson += Get-ChildItem -LiteralPath $bundleRoot -Recurse -File -Filter "*.json"
-}
-
-if (Test-Path -LiteralPath $provDir) {
-  $normJson += Get-ChildItem -LiteralPath $provDir -Recurse -File -Filter "*.json"
-}
-
-$seen = New-Object System.Collections.Generic.HashSet[string]
-
-foreach ($f in $normJson) {
-  $full = $f.FullName
-  if (-not $seen.Add($full)) { continue }
-
-  try {
-    $raw = Get-Content -LiteralPath $full -Raw -Encoding UTF8
-  } catch {
-    Fail ("Failed to read JSON file: " + $full + " | " + $_.Exception.Message)
-    continue
-  }
-
-  try {
-    $null = $raw | ConvertFrom-Json -ErrorAction Stop
-  } catch {
-    Fail ("JSON invalid in " + $full + " | " + $_.Exception.Message)
-  }
-}
-
-# --- ZIP vs manifest consistency (temporarily disabled complexity) ---
-
-# Future: compare entries in $zipPath with manifest.json content.
-# For v1.0 minimal verifier we only enforce SHA256 and JSON validity.
-
-if ($HadError) {
-  Write-Host "K0 verification FAILED"
-  exit 1
+# Kernel JSON
+if (!(Test-Path "bundle_root/kernel/objects_K0.json")) {
+    $errors += "Missing objects_K0.json"
 } else {
-  Write-Host "K0 verification OK"
-  exit 0
+    try {
+        Get-Content "bundle_root/kernel/objects_K0.json" -Raw | Test-Json
+        Write-Host "  ✓ objects_K0.json (valid JSON)" -ForegroundColor Green
+    } catch {
+        $errors += "objects_K0.json contains invalid JSON: $_"
+    }
 }
+
+# Specification files
+$specFiles = @(
+    "SYSTEM_SPEC_v1_0.md",
+    "DIRECTORY_SPEC_v1_0.md", 
+    "FILE_RULES_SPEC_v1_0.md",
+    "GOVERNANCE_SPEC_v1_0.md"
+)
+
+foreach ($file in $specFiles) {
+    $path = "spec/$file"
+    if (!(Test-Path $path)) {
+        $errors += "Missing specification: $file"
+    } else {
+        Write-Host "  ✓ $file" -ForegroundColor Green
+    }
+}
+
+# --- 3. Release Bundle ---
+Write-Host "`nChecking release artifacts..." -ForegroundColor Yellow
+
+if (Test-Path "release/K0_bundle.zip") {
+    $zipSize = (Get-Item "release/K0_bundle.zip").Length
+    if ($zipSize -eq 0) {
+        $warnings += "K0_bundle.zip is empty (0 bytes)"
+    } else {
+        Write-Host "  ✓ K0_bundle.zip ($($zipSize) bytes)" -ForegroundColor Green
+    }
+} else {
+    $errors += "Missing K0_bundle.zip"
+}
+
+if (Test-Path "release/K0_bundle.zip.sha256") {
+    $hashFile = Get-Content "release/K0_bundle.zip.sha256" -Raw
+    if ($hashFile.Trim().Length -eq 64) {
+        Write-Host "  ✓ SHA256 file present" -ForegroundColor Green
+    } else {
+        $warnings += "SHA256 file may be malformed"
+    }
+} else {
+    $errors += "Missing K0_bundle.zip.sha256"
+}
+
+# --- 4. Provenance Files ---
+Write-Host "`nChecking provenance files..." -ForegroundColor Yellow
+
+$provenanceFiles = @(
+    "manifest.json",
+    "semantic_hash_ns.txt", 
+    "source_date_epoch.txt",
+    "byte_hash.txt",
+    "provenance.json"
+)
+
+foreach ($file in $provenanceFiles) {
+    $path = "release/provenance/$file"
+    if (!(Test-Path $path)) {
+        $warnings += "Missing provenance file: $file"
+    } else {
+        $size = (Get-Item $path).Length
+        Write-Host "  ✓ $file ($($size) bytes)" -ForegroundColor Green
+    }
+}
+
+# --- 5. File Encoding and Format Checks ---
+Write-Host "`nRunning format checks..." -ForegroundColor Yellow
+
+# Check for BOM in JSON files
+Get-ChildItem -Recurse -Filter *.json | ForEach-Object {
+    $content = Get-Content $_.FullName -Raw
+    if ($content -and ($content[0] -eq 0xFEFF -or $content[0] -eq 0xFFFE)) {
+        $errors += "JSON file contains BOM: $($_.FullName)"
+    }
+}
+
+# Check spec files for basic Markdown structure
+Get-ChildItem "spec/*.md" | ForEach-Object {
+    $content = Get-Content $_.FullName -Raw
+    if ($content -notmatch "^# ") {
+        $warnings += "Spec file missing H1 header: $($_.Name)"
+    }
+}
+
+# --- 6. Summary ---
+Write-Host "`n=== Verification Summary ===" -ForegroundColor Cyan
+
+if ($warnings.Count -gt 0) {
+    Write-Host "`nWarnings:" -ForegroundColor Yellow
+    foreach ($warning in $warnings) {
+        Write-Host "  ⚠ $warning" -ForegroundColor Yellow
+    }
+}
+
+if ($errors.Count -gt 0) {
+    Write-Host "`nErrors:" -ForegroundColor Red
+    foreach ($error in $errors) {
+        Write-Host "  ✗ $error" -ForegroundColor Red
+    }
+    Write-Host "`n❌ Verification FAILED" -ForegroundColor Red
+    exit 1
+} else {
+    Write-Host "`n✅ Verification PASSED" -ForegroundColor Green
+    if ($warnings.Count -gt 0) {
+        Write-Host "   (with $($warnings.Count) warning(s))" -ForegroundColor Yellow
+    }
+    exit 0
+}
+

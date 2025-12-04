@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RIS/IES Unit Schema (K0)",
+  "type": "object",
+  "required": ["id", "dim"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_\\-]+$"
+    },
+
+    "dim": {
+      "type": "object",
+      "required": ["L", "M", "T", "I", "Th", "N", "J"],
+      "properties": {
+        "L": { "type": "number" },
+        "M": { "type": "number" },
+        "T": { "type": "number" },
+        "I": { "type": "number" },
+        "Th": { "type": "number" },
+        "N": { "type": "number" },
+        "J": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+
+    "aliases": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+
+    "description": {
+      "type": ["string", "null"]
+    }
+  },
+
+  "additionalProperties": false
+}

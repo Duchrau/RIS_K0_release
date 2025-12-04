@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RIS/IES Kernel Object Schema (K0)",
+  "type": "object",
+  "required": ["kind", "id", "basename", "lifecycle_status"],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": ["VAR", "CONST", "OP", "UNIT", "RELATION", "DOMAIN"]
+    },
+
+    "id": {
+      "type": "string",
+      "pattern": "^K0_[A-Z0-9_]+$"
+    },
+
+    "basename": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+
+    "lifecycle_status": {
+      "type": "string",
+      "enum": ["ACTIVE", "SUPERSEDED_BY", "DEPRECATED", "PENDING"]
+    },
+
+    "doc": {
+      "type": "string"
+    },
+
+    "equation": {
+      "type": "object",
+      "properties": {
+        "canonical": { "type": ["string", "null"] },
+        "refs": {
+          "type": "object",
+          "properties": {
+            "variables": {
+              "type": "array",
+              "items": { "type": "string" },
+              "uniqueItems": true
+            },
+            "operators": {
+              "type": "array",
+              "items": { "type": "string" },
+              "uniqueItems": true
+            }
+          },
+          "required": ["variables", "operators"]
+        },
+        "unit_ref": { "type": ["string", "null"] },
+        "domain_ref": { "type": ["string", "null"] }
+      },
+      "required": ["canonical", "refs"]
+    },
+
+    "value": {},
+
+    "unit": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_/]+$"
+        }
+      }
+    },
+
+    "domain": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string" },
+        "params": { "type": "object" }
+      }
+    },
+
+    "superseded_by": {
+      "type": ["string", "null"]
+    }
+  },
+
+  "additionalProperties": false
+}
