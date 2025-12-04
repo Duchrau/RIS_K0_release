@@ -1,12 +1,5 @@
-kernel/objects_K0.json
-logs/KEEP
-reports/KEEP
-spec/DIRECTORY_SPEC_v1_0.md
-spec/FILE_RULES_SPEC_v1_0.md
-spec/GOVERNANCE_SPEC_v1_0.md
-spec/non_normative_META_SPEC_v1_0.md
-spec/SYSTEM_SPEC_v1_0.md
-tools/lint_docs_layout.py
-views/KEEP
+# Semantic Namespace Hash
+# This hash represents the semantic structure of K0 objects, domains, and units.
+# Generated during release process.
 
-
+PLACEHOLDER - To be replaced with actual hash during release

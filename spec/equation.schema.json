@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RIS/IES Equation Schema (K0)",
+  "type": "object",
+  "required": ["canonical", "refs"],
+  "properties": {
+    "canonical": {
+      "type": ["string", "null"]
+    },
+
+    "refs": {
+      "type": "object",
+      "required": ["variables", "operators"],
+      "properties": {
+        "variables": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "operators": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "unit_ref": {
+      "type": ["string", "null"]
+    },
+
+    "domain_ref": {
+      "type": ["string", "null"]
+    }
+  },
+
+  "additionalProperties": false
+}

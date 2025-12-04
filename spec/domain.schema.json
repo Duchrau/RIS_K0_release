@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RIS/IES Domain Schema (K0)",
+  "type": "object",
+
+  "required": ["id", "kind", "description"],
+
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9_]+$"
+    },
+
+    "kind": {
+      "type": "string",
+      "enum": [
+        "SET",
+        "SPACE",
+        "SIMPLEX",
+        "MANIFOLD",
+        "INTERVAL",
+        "CARTESIAN",
+        "PRODUCT",
+        "CUSTOM"
+      ]
+    },
+
+    "description": {
+      "type": "string"
+    },
+
+    "elements": {
+      "type": "array",
+      "items": { "type": "string" },
+      "nullable": true
+    }
+  },
+
+  "additionalProperties": false
+}

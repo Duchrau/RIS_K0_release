@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RIS/IES Variable Schema (K0)",
+  "type": "object",
+
+  "required": ["id", "type", "unit_ref"],
+
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_\\-]+$"
+    },
+
+    "type": {
+      "type": "string",
+      "enum": [
+        "int",
+        "float",
+        "string",
+        "bool",
+        "timestamp",
+        "uuid",
+        "sha512",
+        "hexfloat"
+      ]
+    },
+
+    "unit_ref": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_\\-]+$"
+    },
+
+    "domain": {
+      "type": "object",
+      "properties": {
+        "min": { "type": ["number", "null"] },
+        "max": { "type": ["number", "null"] },
+        "enum": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "description": {
+      "type": ["string", "null"]
+    },
+
+    "qc": {
+      "type": "object",
+      "properties": {
+        "required": { "type": ["boolean", "null"] },
+        "default_flag": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    }
+  },
+
+  "additionalProperties": false
+}

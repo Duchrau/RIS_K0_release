@@ -1,6 +1,15 @@
 {
-  "generated": "2025-12-02T14:23:18.8455471+01:00",
-  "status": "ARCHIVE_LOCKED",
-  "bundle": "K0_bundle.zip"
+  "hashes": {
+    "bundle": "04427FB222FCB4489E8FEF0B6077BD5E6125DCCE31B1267E746E4B91614C7B2E",
+    "byte_level": "PLACEHOLDER",
+    "semantic_namespace": "PLACEHOLDER"
+  },
+  "reproducibility_statement": "This build is reproducible given the same source and build environment.",
+  "version": "1.0.0",
+  "note": "This is a pre-release provenance document. Final hashes will be generated during official release.",
+  "build_date": "2025-12-03",
+  "build_environment": {
+    "runner": "local-windows",
+    "powershell_version": "7.5.4"
+  }
 }
-

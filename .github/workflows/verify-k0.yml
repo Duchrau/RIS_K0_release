@@ -1,0 +1,36 @@
+name: verify-k0
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PowerShell
+        uses: microsoft/setup-powershell@v1
+        with:
+          pwsh-version: "7.4"
+
+      - name: Run K0 verification
+        id: verify
+        run: |
+          pwsh ./verify_all.ps1
+          echo "VERIFICATION_EXIT_CODE=$?" >> $GITHUB_OUTPUT
+
+      - name: Check verification result
+        if: steps.verify.outputs.VERIFICATION_EXIT_CODE != '0'
+        run: |
+          echo "❌ K0 verification failed"
+          exit 1
