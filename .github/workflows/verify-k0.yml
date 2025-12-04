@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  verify:
+  verify-k0:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,7 +17,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - uses: azure/setup-powershell@v4
+      - name: Print PS env
+        shell: pwsh
+        run: |
+          $PSVersionTable
+          pwsh -v
       - name: Run K0 verification
         shell: pwsh
-        run: pwsh -File ./verify_all.ps1
+        run: |
+          Set-StrictMode -Version Latest
+          $ErrorActionPreference = 'Stop'
+          pwsh -NoLogo -NoProfile -File ./verify_all.ps1
