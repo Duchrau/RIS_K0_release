@@ -28,33 +28,29 @@ $RepoRoot = (git -C $here rev-parse --show-toplevel 2>$null).Trim()
 if(-not $RepoRoot){ Fail "NOT_IN_GIT_REPO: cannot determine repo root from '$here'" }
 Set-Location -LiteralPath $RepoRoot
 
+# NEUE ZEILE EINGEFÜGT
+$script:RepoRoot = $RepoRoot
+[IO.Directory]::SetCurrentDirectory($RepoRoot)  # optional, aber sinnvoll
+
+# NEUE READER-FUNKTIONEN - ERWEITERTE VERSIONEN
 function ReadAsciiLF([string]$Path){
-  if(-not (Test-Path -LiteralPath $Path)){ Fail "MISSING: $Path" }
-  $bytes = [IO.File]::ReadAllBytes($Path)
-
-  if($bytes.Length -lt 1){ Fail "FORMAT_FAIL (empty not allowed): $Path" }
-  if($bytes[-1] -ne 0x0A){ Fail "EOL_FAIL (final LF required): $Path" }
-
-  foreach($b in $bytes){
-    if($b -gt 0x7F){ Fail "FORMAT_FAIL (ASCII required): $Path" }
-    if($b -eq 0x0D){ Fail "EOL_FAIL (CR forbidden): $Path" }
-  }
-
-  return [Text.Encoding]::ASCII.GetString($bytes)
+  $full = Join-Path -Path $script:RepoRoot -ChildPath $Path
+  if(-not (Test-Path -LiteralPath $full)){ Fail "MISSING: $Path" }
+  $raw = Get-Content -Raw -Encoding ASCII -LiteralPath $full
+  if($raw -notmatch "^\A[\x00-\x7F]*\n\z"){ Fail "FORMAT_FAIL (ASCII+LF required): $Path" }
+  return $raw
 }
 
 function ReadUtf8NoBomLF([string]$Path){
-  if(-not (Test-Path -LiteralPath $Path)){ Fail "MISSING: $Path" }
-
-  $bytes = [IO.File]::ReadAllBytes($Path)
+  $full = Join-Path -Path $script:RepoRoot -ChildPath $Path
+  if(-not (Test-Path -LiteralPath $full)){ Fail "MISSING: $Path" }
+  $bytes = [IO.File]::ReadAllBytes($full)
   if($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF){
     Fail "BOM_FAIL (UTF-8 BOM not allowed): $Path"
   }
-
   $txt = [Text.UTF8Encoding]::new($false).GetString($bytes)
   if($txt -match "`r"){ Fail "EOL_FAIL (CR not allowed): $Path" }
   if($txt -notmatch "\n\z"){ Fail "EOL_FAIL (final LF required): $Path" }
-
   return $txt
 }
 
