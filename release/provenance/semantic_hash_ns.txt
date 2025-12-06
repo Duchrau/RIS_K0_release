@@ -1,5 +1,0 @@
-# Semantic Namespace Hash
-# This hash represents the semantic structure of K0 objects, domains, and units.
-# Generated during release process.
-
-PLACEHOLDER - To be replaced with actual hash during release

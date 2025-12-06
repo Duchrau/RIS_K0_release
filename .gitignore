@@ -1,4 +1,4 @@
-﻿# Ignore temporary and local files
+# Ignore temporary and local files
 _ci_local/
 tmp_*/
 TinyTeX.zip
@@ -26,3 +26,10 @@ RIS_K0_*.zip.sha512
 ris_k0_key.pub
 bundle_root/
 provenance/
+
+release/provenance/*
+!release/provenance/manifest.json
+!release/provenance/provenance.json
+!release/provenance/semantic_hash.txt
+!release/provenance/byte_hash.txt
+!release/provenance/source_date_epoch.txt
