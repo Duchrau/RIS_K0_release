@@ -27,13 +27,22 @@ ris_k0_key.pub
 bundle_root/
 provenance/
 
+
+
+
+
+
+
+
+# never commit release zip artifacts (release-assets only)
+release/K0_bundle.zip
+release/K0_bundle.zip.sha256
+
+# provenance: track contract anchors only (allowlist), ignore everything else
 release/provenance/*
+!release/provenance/
 !release/provenance/manifest.json
 !release/provenance/provenance.json
 !release/provenance/semantic_hash.txt
 !release/provenance/byte_hash.txt
 !release/provenance/source_date_epoch.txt
-
-# never commit release zip artifacts (release-assets only)
-release/K0_bundle.zip
-release/K0_bundle.zip.sha256
