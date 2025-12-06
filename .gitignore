@@ -39,6 +39,8 @@ release/K0_bundle.zip
 release/K0_bundle.zip.sha256
 
 # provenance: track contract anchors only (allowlist), ignore everything else
+
+# provenance: track contract anchors only (allowlist), ignore everything else
 release/provenance/*
 !release/provenance/
 !release/provenance/manifest.json
