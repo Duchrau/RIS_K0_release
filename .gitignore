@@ -33,3 +33,7 @@ release/provenance/*
 !release/provenance/semantic_hash.txt
 !release/provenance/byte_hash.txt
 !release/provenance/source_date_epoch.txt
+
+# never commit release zip artifacts (release-assets only)
+release/K0_bundle.zip
+release/K0_bundle.zip.sha256
