@@ -32,3 +32,9 @@ Get-Content release/K0_bundle.zip.sha256
 
 ### CI Verification
 The GitHub workflow \erify-k0.yml\ runs automatic verification on all pushes and pull requests.
+
+
+## Toolchain Pin
+
+ZIP_WRITER_PIN: 7-Zip 24.07
+Flags: a -tzip -mx=9 -mm=Copy -mtm=on -mtc=off -mta=off -mcu=on -i@files_v1_0_1.lst

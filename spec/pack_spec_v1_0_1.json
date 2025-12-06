@@ -1,0 +1,1 @@
+{"version":"1.0.1","build":{"toolchain":{"zip_writer":"7-Zip 24.07","flags":["a","-tzip","-mx=9","-mm=Copy","-mtm=on","-mtc=off","-mta=off","-mcu=on","-i@files_v1_0_1.lst"]}}}
