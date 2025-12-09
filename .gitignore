@@ -25,6 +25,8 @@ RIS_K0_*.zip.sha256
 RIS_K0_*.zip.sha512
 ris_k0_key.pub
 bundle_root/
+!bundle_root/kernel/
+!bundle_root/kernel/objects_K0.json
 provenance/
 
 
