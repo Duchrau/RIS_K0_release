@@ -1,0 +1,271 @@
+[
+  {
+    "id": "CONST:k_B@1.0.0",
+    "kind": "CONSTANT",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "symbol": "k_B",
+      "unit_ref": "UNIT:J_per_K@1.0.0"
+    }
+  },
+  {
+    "id": "DOM:MarkovSimplex@1.0.0",
+    "kind": "DOMAIN",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "description": "Markov simplex"
+    }
+  },
+  {
+    "id": "DOM:NESSSpace@1.0.0",
+    "kind": "DOMAIN",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "description": "NESS space"
+    }
+  },
+  {
+    "id": "OP:dot@1.0.0",
+    "kind": "OPERATOR",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "arity": 1,
+      "description": "Time derivative",
+      "symbol": "d/dt",
+      "canonical_token": "dot"
+    }
+  },
+  {
+    "id": "UNIT:J_per_K@1.0.0",
+    "kind": "UNIT",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "CORE_CRITICAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "symbol": "J K^-1",
+      "base_dimensions": { "M": 1, "L": 2, "T": -2, "TH": -1 },
+      "scale_to_SI": 1
+    }
+  },
+  {
+    "id": "UNIT:W_per_K@1.0.0",
+    "kind": "UNIT",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "CORE_CRITICAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "symbol": "W K^-1",
+      "base_dimensions": { "M": 1, "L": 2, "T": -3, "TH": -1 },
+      "scale_to_SI": 1
+    }
+  },
+  {
+    "id": "UNIT:dimensionless@1.0.0",
+    "kind": "UNIT",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "symbol": "1",
+      "base_dimensions": {},
+      "scale_to_SI": 1
+    }
+  },
+  {
+    "id": "UNIT:s_inv@1.0.0",
+    "kind": "UNIT",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "symbol": "s^-1",
+      "base_dimensions": { "T": -1 },
+      "scale_to_SI": 1
+    }
+  },
+  {
+    "id": "VAR:Jij@1.0.0",
+    "kind": "VARIABLE",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "symbol": "J_ij",
+      "domain_ref": "DOM:NESSSpace@1.0.0",
+      "unit_ref": "UNIT:s_inv@1.0.0"
+    }
+  },
+  {
+    "id": "VAR:L@1.0.0",
+    "kind": "VARIABLE",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "symbol": "L",
+      "domain_ref": "DOM:MarkovSimplex@1.0.0",
+      "unit_ref": "UNIT:dimensionless@1.0.0"
+    }
+  },
+  {
+    "id": "VAR:Wij@1.0.0",
+    "kind": "VARIABLE",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "symbol": "w_ij",
+      "domain_ref": "DOM:MarkovSimplex@1.0.0",
+      "unit_ref": "UNIT:s_inv@1.0.0"
+    }
+  },
+  {
+    "id": "VAR:p@1.0.0",
+    "kind": "VARIABLE",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "symbol": "p",
+      "domain_ref": "DOM:MarkovSimplex@1.0.0",
+      "unit_ref": "UNIT:dimensionless@1.0.0"
+    }
+  },
+  {
+    "id": "VAR:pi@1.0.0",
+    "kind": "VARIABLE",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "symbol": "pi",
+      "domain_ref": "DOM:MarkovSimplex@1.0.0",
+      "unit_ref": "UNIT:dimensionless@1.0.0"
+    }
+  },
+  {
+    "id": "VAR:sigma@1.0.0",
+    "kind": "VARIABLE",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "depends_on": [],
+    "semantic_payload": {
+      "symbol": "sigma",
+      "domain_ref": "DOM:NESSSpace@1.0.0",
+      "unit_ref": "UNIT:W_per_K@1.0.0"
+    }
+  },
+  {
+    "id": "EQ:RIS_EQ_EPR@2.0.0",
+    "kind": "EQUATION",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "domain_ref": "DOM:NESSSpace@1.0.0",
+    "unit_ref": "UNIT:W_per_K@1.0.0",
+    "depends_on": [
+      "CONST:k_B@1.0.0",
+      "DOM:NESSSpace@1.0.0",
+      "UNIT:W_per_K@1.0.0",
+      "VAR:Jij@1.0.0",
+      "VAR:Wij@1.0.0",
+      "VAR:p@1.0.0",
+      "VAR:sigma@1.0.0"
+    ],
+    "semantic_payload": {
+      "refs": {
+        "variables": [
+          "VAR:Jij@1.0.0",
+          "VAR:Wij@1.0.0",
+          "VAR:p@1.0.0",
+          "VAR:sigma@1.0.0"
+        ],
+        "constants": [
+          "CONST:k_B@1.0.0"
+        ],
+        "operators": []
+      },
+      "canonical": null
+    }
+  },
+  {
+    "id": "EQ:RIS_EQ_LYAPUNOV@1.0.0",
+    "kind": "EQUATION",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "domain_ref": "DOM:MarkovSimplex@1.0.0",
+    "unit_ref": null,
+    "depends_on": [
+      "DOM:MarkovSimplex@1.0.0",
+      "OP:dot@1.0.0",
+      "VAR:L@1.0.0",
+      "VAR:p@1.0.0",
+      "VAR:pi@1.0.0"
+    ],
+    "semantic_payload": {
+      "refs": {
+        "variables": [
+          "VAR:L@1.0.0",
+          "VAR:p@1.0.0",
+          "VAR:pi@1.0.0"
+        ],
+        "constants": [],
+        "operators": [
+          "OP:dot@1.0.0"
+        ]
+      },
+      "canonical": "dot(L) <= 0"
+    }
+  },
+  {
+    "id": "EQ:RIS_EQ_MAIN@2.0.0",
+    "kind": "EQUATION",
+    "lifecycle_status": "ACTIVE",
+    "epistemic_status": "CERTAIN",
+    "criticality": "NORMAL",
+    "domain_ref": "DOM:MarkovSimplex@1.0.0",
+    "unit_ref": null,
+    "depends_on": [
+      "DOM:MarkovSimplex@1.0.0",
+      "OP:dot@1.0.0",
+      "VAR:Wij@1.0.0",
+      "VAR:p@1.0.0"
+    ],
+    "semantic_payload": {
+      "refs": {
+        "variables": [
+          "VAR:Wij@1.0.0",
+          "VAR:p@1.0.0"
+        ],
+        "constants": [],
+        "operators": [
+          "OP:dot@1.0.0"
+        ]
+      },
+      "canonical": "dot(p) = transpose(W) * p - diag(W * 1) * p"
+    }
+  }
+]
