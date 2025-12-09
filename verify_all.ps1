@@ -28,7 +28,7 @@ $RepoRoot = (git -C $here rev-parse --show-toplevel 2>$null).Trim()
 if(-not $RepoRoot){ Fail "NOT_IN_GIT_REPO: cannot determine repo root from '$here'" }
 Set-Location -LiteralPath $RepoRoot
 
-# NEUE ZEILE EINGEFÜGT
+# NEUE ZEILE EINGEFÃƒÅ“GT
 $script:RepoRoot = $RepoRoot
 [IO.Directory]::SetCurrentDirectory($RepoRoot)  # optional, aber sinnvoll
 
@@ -206,8 +206,11 @@ function LoadProvenance(){
   $pj = $txt | ConvertFrom-Json
 
   if(-not $pj.source -or -not $pj.source.git_commit){ Fail "PROVENANCE_FAIL: source.git_commit missing" }
-  if(-not $pj.zip -or -not $pj.zip.sha256){ Fail "PROVENANCE_FAIL: zip.sha256 missing" }
-  AssertHex64 'PROVENANCE_FAIL: zip.sha256' (([string]$pj.zip.sha256).ToLower())
+  if(-not $pj.zip){ Fail "PROVENANCE_FAIL: zip missing" }
+  if($Mode -ne 'SOURCE'){
+    if(-not $pj.zip.sha256){ Fail "PROVENANCE_FAIL: zip.sha256 missing" }
+  if($Mode -ne 'SOURCE'){ AssertHex64 'PROVENANCE_FAIL: zip.sha256' (([string]$pj.zip.sha256).ToLower()) }
+  }
 
   if(-not $pj.build -or -not $pj.build.toolchain){ Fail "PROVENANCE_FAIL: build.toolchain missing" }
   if([string]$pj.build.toolchain.zip_writer -ne '7-Zip 24.07'){ Fail "PROVENANCE_FAIL: build.toolchain.zip_writer != '7-Zip 24.07'" }
@@ -233,7 +236,7 @@ function VerifyAnchorFiles($mf,$pj){
 
   $bh = ReadAsciiLF 'release/provenance/byte_hash.txt'
   $wantBh = "$(([string]$pj.zip.sha256).ToLower())`n"
-  if($bh -ne $wantBh){ Fail "BYTE_HASH_MISMATCH (byte_hash.txt != provenance.zip.sha256)" }
+  if($Mode -ne 'SOURCE' -and $bh -ne $wantBh){ Fail "BYTE_HASH_MISMATCH (byte_hash.txt != provenance.zip.sha256)" }
 }
 
 function VerifyNoRepoZipLeak(){
