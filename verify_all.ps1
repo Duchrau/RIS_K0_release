@@ -1,4 +1,4 @@
-# verify_all.ps1
+﻿# verify_all.ps1
 # Deterministic verification for RIS K0 (Contract A': provenance allowlist + assets as Release-only)
 # Exit codes: 0=success, 1=failure
 
@@ -28,7 +28,7 @@ $RepoRoot = (git -C $here rev-parse --show-toplevel 2>$null).Trim()
 if(-not $RepoRoot){ Fail "NOT_IN_GIT_REPO: cannot determine repo root from '$here'" }
 Set-Location -LiteralPath $RepoRoot
 
-# NEUE ZEILE EINGEFÃƒÅ“GT
+# NEUE ZEILE EINGEFÃƒÆ’Ã…â€œGT
 $script:RepoRoot = $RepoRoot
 [IO.Directory]::SetCurrentDirectory($RepoRoot)  # optional, aber sinnvoll
 
