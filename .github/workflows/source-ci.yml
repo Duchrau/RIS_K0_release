@@ -1,0 +1,19 @@
+name: source-ci
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - "README.md"
+      - "docs/**"
+      - ".github/**"
+      - "*.md"
+  pull_request:
+    branches: [ main ]
+jobs:
+  source-verify:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Source verify (no build)
+        shell: pwsh
+        run: ./verify_all.ps1 -Mode Source

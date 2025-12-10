@@ -1,0 +1,24 @@
+name: release-validate
+on:
+  release:
+    types: [published]
+jobs:
+  bundle-validate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download release assets
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: ${{ github.repository }}
+          tag: ${{ github.event.release.tag_name }}
+          fileName: |
+            K0_bundle.zip
+            K0_bundle.zip.sha256
+            manifest.json
+            provenance.json
+      - name: Bundle verify
+        shell: pwsh
+        run: ./verify_all.ps1 -Mode Bundle -Zip ./K0_bundle.zip
