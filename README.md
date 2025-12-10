@@ -50,3 +50,12 @@ The resulting bundle appears as a GitHub Release artifact.
 
 ## Provenance
 Complete provenance metadata is available in elease/provenance/.
+
+
+## Citation
+
+If you reference RIS K0, please use the Zenodo Concept DOI:
+
+**10.5281/zenodo.17872745**
+
+This DOI always resolves to the newest version of the deterministic bundle.
