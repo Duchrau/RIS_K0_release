@@ -17,17 +17,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: - name: Show PowerShell version
+      - name: Show PowerShell version
         shell: powershell
         run: Write-Host ($PSVersionTable.PSVersion)
-`n{{NEXTBLOCK}}- name: Run K0 verify (SOURCE mode)
+
+      - name: Run K0 verify (SOURCE mode)
         shell: powershell
         run: |
           Set-StrictMode -Version Latest
-          Stop = 'Stop'
-          Set-Location 
+          $ErrorActionPreference = 'Stop'
+          Set-Location $env:GITHUB_WORKSPACE
           [Environment]::CurrentDirectory = (Get-Location).Path
           ./verify_all.ps1 -Mode source
-
-
-
