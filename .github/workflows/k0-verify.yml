@@ -1,0 +1,31 @@
+﻿name: K0 – SOURCE verify
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  k0-source-verify:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Show PowerShell version
+        shell: powershell
+        run: System.Collections.Hashtable.PSVersion
+
+      - name: Run K0 verify (SOURCE mode)
+        shell: powershell
+        run: |
+          Set-StrictMode -Version Latest
+          Stop = 'Stop'
+          Set-Location 
+          [Environment]::CurrentDirectory = (Get-Location).Path
+          ./verify_all.ps1 -Mode source
