@@ -17,12 +17,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Show PowerShell version
-  shell: powershell
-  run: Write-Host (\System.Collections.Hashtable.PSVersion)
-
-
-      - name: Run K0 verify (SOURCE mode)
+      - name: - name: Show PowerShell version
+        shell: powershell
+        run: Write-Host ($PSVersionTable.PSVersion)
+`n{{NEXTBLOCK}}- name: Run K0 verify (SOURCE mode)
         shell: powershell
         run: |
           Set-StrictMode -Version Latest
@@ -30,5 +28,6 @@ jobs:
           Set-Location 
           [Environment]::CurrentDirectory = (Get-Location).Path
           ./verify_all.ps1 -Mode source
+
 
 
