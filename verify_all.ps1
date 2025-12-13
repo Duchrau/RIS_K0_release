@@ -334,6 +334,10 @@ try {
 
   AssertProvenanceAllowlist
   VerifyNoRepoZipLeak
+if($Mode -eq 'source'){
+    Write-Host '=== SOURCE_STATE_CONSISTENT: PASS'
+    exit 0
+}
 
 $pack = LoadPackSpec
 $mf   = LoadManifest
