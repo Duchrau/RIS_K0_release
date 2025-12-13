@@ -50,3 +50,10 @@ release/provenance/*
 !release/provenance/semantic_hash.txt
 !release/provenance/byte_hash.txt
 !release/provenance/source_date_epoch.txt
+# build/work junk (must not be tracked)
+.work/
+dist/
+out/
+stage_*/
+tmp_*/
+*.zip
