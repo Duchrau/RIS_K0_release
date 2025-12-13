@@ -28,4 +28,5 @@ jobs:
           $ErrorActionPreference = 'Stop'
           Set-Location $env:GITHUB_WORKSPACE
           [Environment]::CurrentDirectory = (Get-Location).Path
-          ./verify_all.ps1 -Mode source
+          ./verify_all.ps1 -Mode source -ManifestPath release/provenance/manifest.source.json
+
