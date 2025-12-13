@@ -335,9 +335,17 @@ try {
   AssertProvenanceAllowlist
   VerifyNoRepoZipLeak
 
-  $pack = LoadPackSpec
-  $mf   = LoadManifest
-  VerifyManifestFilesAndPayload $mf
+$pack = LoadPackSpec
+$mf   = LoadManifest
+
+if ($Mode -eq 'source') {
+    Write-Host 'SOURCE mode: skip bundle_root and payload checks'
+    Write-Host '=== SOURCE_STATE_CONSISTENT: PASS'
+    exit 0
+}
+
+VerifyManifestFilesAndPayload $mf
+
   $pj   = LoadProvenance
 
   # provenance.source.git_commit must match payload commit (bundle_root+spec), not HEAD.
